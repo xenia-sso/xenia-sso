@@ -53,6 +53,11 @@ export default defineComponent({
         route: '/auth/profile',
       },
       {
+        title: 'Clients',
+        icon: 'dns',
+        route: '/auth/admin/clients',
+      },
+      {
         title: 'Logout',
         icon: 'logout',
         route: '/auth/logout',
