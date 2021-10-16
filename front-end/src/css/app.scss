@@ -1,1 +1,10 @@
 // app global css in SCSS form
+
+// Hide input message slot by default & add transition when shown
+label.q-field.q-field--with-bottom {
+  transition: padding-bottom 0.5s ease;
+  padding-bottom: 0;
+  &.q-field--error {
+    padding-bottom: 20px;
+  }
+}
