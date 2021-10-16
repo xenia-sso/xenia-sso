@@ -14,6 +14,10 @@
             <q-input v-model.trim="formFields.name" filled dense square label="Name" />
           </div>
 
+          <div class="col col-12 q-py-md">
+            <q-checkbox v-model="formFields.allUsers" dense label="Grant access to all users" />
+          </div>
+
           <div class="col col-12">
             <q-select
               v-model="formFields.grantedUsers"
@@ -55,6 +59,7 @@ export default defineComponent({
 
     const formFields = ref({
       name: '',
+      allUsers: false,
       grantedUsers: [],
     });
 
