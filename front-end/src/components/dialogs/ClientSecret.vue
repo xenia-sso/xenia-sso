@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="persistent">
     <q-card class="q-dialog-plugin q-py-md q-px-lg">
       <q-form @submit="onDialogOK(formFields)">
         <div class="row q-col-gutter-xs">
@@ -16,7 +16,9 @@
           </div>
 
           <div class="col col-12 q-mt-sm">
-            <q-btn type="submit" color="negative" class="full-width">Generate a new secret</q-btn>
+            <q-btn color="negative" class="full-width" :loading="isFetchingSecret" @click="fetchSecret()">
+              Generate a new secret
+            </q-btn>
           </div>
         </div>
       </q-form>
@@ -38,6 +40,13 @@ export default defineComponent({
   setup() {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
+    const persistent = ref(false);
+    const isFetchingSecret = ref(false);
+    const fetchSecret = () => {
+      isFetchingSecret.value = true;
+      persistent.value = true;
+    };
+
     const formFields = ref({
       oldPassword: '',
       password: '',
@@ -56,6 +65,9 @@ export default defineComponent({
       RULES,
       formFields,
       submit,
+      isFetchingSecret,
+      fetchSecret,
+      persistent,
     };
   },
 });
