@@ -3,8 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>Quasar App</q-toolbar-title>
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title>SSO</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -36,6 +35,7 @@
 import MenuLink from 'src/components/MenuLink.vue';
 
 import { defineComponent, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -43,6 +43,7 @@ export default defineComponent({
     MenuLink,
   },
   setup() {
+    const route = useRoute();
     const leftDrawerOpen = ref(false);
 
     const menuLinks = [
@@ -61,6 +62,7 @@ export default defineComponent({
     return {
       menuLinks,
       leftDrawerOpen,
+      route,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
