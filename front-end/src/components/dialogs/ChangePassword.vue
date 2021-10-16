@@ -1,0 +1,91 @@
+<template>
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-card class="q-dialog-plugin q-py-md q-px-lg">
+      <q-form @submit="onDialogOK(formFields)">
+        <div class="row q-col-gutter-xs">
+          <div class="col col-12 text-h6 q-mb-md">Change password</div>
+
+          <div class="col col-12">
+            <q-input
+              v-model="formFields.oldPassword"
+              filled
+              square
+              dense
+              type="password"
+              label="Old password"
+              lazy-rules
+              :rules="[RULES.required]"
+            ></q-input>
+          </div>
+
+          <div class="col col-12">
+            <q-input
+              v-model="formFields.password"
+              filled
+              square
+              dense
+              type="password"
+              label="Password"
+              lazy-rules
+              :rules="[RULES.required, RULES.password]"
+            ></q-input>
+          </div>
+
+          <div class="col col-12">
+            <q-input
+              v-model="formFields.confirmPassword"
+              filled
+              square
+              dense
+              type="password"
+              label="Confirm password"
+              lazy-rules
+              :rules="[RULES.required, RULES.password]"
+            ></q-input>
+          </div>
+
+          <div class="col col-12 q-mt-sm">
+            <q-btn type="submit" color="primary" class="full-width">Submit</q-btn>
+          </div>
+        </div>
+      </q-form>
+    </q-card>
+  </q-dialog>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { useDialogPluginComponent } from 'quasar';
+import { RULES } from 'src/utils/form-validation';
+
+export default defineComponent({
+  emits: [
+    // REQUIRED; need to specify some events that your
+    // component will emit through useDialogPluginComponent()
+    ...useDialogPluginComponent.emits,
+  ],
+  setup() {
+    const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
+
+    const formFields = ref({
+      oldPassword: '',
+      password: '',
+      confirmPassword: '',
+    });
+
+    const submit = () => {
+      console.log('submit');
+    };
+
+    return {
+      dialogRef,
+      onDialogHide,
+      onDialogOK,
+      onDialogCancel,
+      RULES,
+      formFields,
+      submit,
+    };
+  },
+});
+</script>

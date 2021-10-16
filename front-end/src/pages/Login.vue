@@ -5,7 +5,7 @@
 
       <div class="col col-12">
         <q-input
-          v-model="formFields.email"
+          v-model.trim="formFields.email"
           filled
           square
           dense
@@ -17,7 +17,7 @@
 
       <div class="col col-12">
         <q-input
-          v-model="formFields.password"
+          v-model.trim="formFields.password"
           filled
           square
           dense
