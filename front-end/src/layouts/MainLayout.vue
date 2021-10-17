@@ -63,6 +63,11 @@ export default defineComponent({
         route: '/auth/admin/users',
       },
       {
+        title: 'Invitation codes',
+        icon: 'group_add',
+        route: '/auth/admin/invitation-codes',
+      },
+      {
         title: 'Logout',
         icon: 'logout',
         route: '/auth/logout',

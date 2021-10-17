@@ -39,6 +39,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Users.vue') }],
   },
+  {
+    path: '/auth/admin/invitation-codes',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/auth/admin/InvitationCodes.vue') }],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
