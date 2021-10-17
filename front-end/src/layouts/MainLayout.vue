@@ -58,6 +58,11 @@ export default defineComponent({
         route: '/auth/admin/clients',
       },
       {
+        title: 'Users',
+        icon: 'people',
+        route: '/auth/admin/users',
+      },
+      {
         title: 'Logout',
         icon: 'logout',
         route: '/auth/logout',
