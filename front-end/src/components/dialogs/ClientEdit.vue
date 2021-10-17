@@ -11,14 +11,14 @@
           </div>
 
           <div class="col col-12">
-            <q-input v-model.trim="formFields.name" filled dense square label="Name" />
+            <q-input v-model.trim="formFields.name" filled dense square label="Name" :rules="[RULES.required]" />
           </div>
 
           <div class="col col-12 q-py-md">
             <q-checkbox v-model="formFields.allUsers" dense label="Grant access to all users" />
           </div>
 
-          <div class="col col-12">
+          <div v-if="!formFields.allUsers" class="col col-12">
             <q-select
               v-model="formFields.grantedUsers"
               :options="filteredUsers"
