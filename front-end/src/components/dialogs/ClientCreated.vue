@@ -1,12 +1,22 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin q-py-md q-px-lg">
-      <q-form @submit="onDialogOK(formFields)">
+      <q-form @submit="onDialogOK()">
         <div class="row q-col-gutter-md">
           <div class="col col-12 row items-center q-mb-sm">
             <div class="col text-h6">Client created</div>
             <div class="col col-auto">
-              <q-btn flat round icon="close" color="grey-7" :disable="isFetchingSecret" @click="onDialogHide" />
+              <q-btn flat round icon="close" color="grey-7" @click="onDialogHide" />
+            </div>
+
+            <div class="col col-12 q-my-sm">
+              <q-banner inline-actions rounded class="bg-warning text-dark">
+                <template #avatar>
+                  <q-icon name="info" color="dark" />
+                </template>
+                Client secrets are hased and cannot be read once stored. Make sure you copied client secret before
+                closing the dialog.
+              </q-banner>
             </div>
             <div class="col col-12">Client ID:</div>
             <div class="col col-12 q-mb-sm">

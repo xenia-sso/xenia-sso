@@ -49,10 +49,13 @@ export default defineComponent({
         component: ClientEdit,
         componentProps: { client },
       }).onOk((data: { client: Client; secret?: string }) => {
+        if (!data.secret) {
+          // Edition mode
+          return;
+        }
         $q.dialog({
           component: ClientCreated,
           componentProps: { id: data.client.id, secret: data.secret },
-          persistent: true,
         });
       });
     };
