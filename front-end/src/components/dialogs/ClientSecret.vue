@@ -32,42 +32,27 @@
             </q-btn>
           </div>
 
-          <div v-if="newSecret" class="col col-12 row items-center">
-            <div class="col q-mr-sm">
-              <div class="q-px-md q-py-sm text-dark new-secret">{{ newSecret }}</div>
-            </div>
-            <div class="col col-auto">
-              <q-btn flat round icon="content_copy" color="primary" @click="copySecret" />
-            </div>
-          </div>
+          <client-secret-copy v-if="newSecret" :secret="newSecret" />
         </div>
       </q-form>
     </q-card>
   </q-dialog>
 </template>
 
-<style lang="scss" scoped>
-.new-secret {
-  border: 1px dashed $blue-9;
-  background-color: $blue-2;
-}
-</style>
-
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
 import { RULES } from 'src/utils/form-validation';
-import { useQuasar } from 'quasar';
-import copy from 'copy-to-clipboard';
+import ClientSecretCopy from './partials/ClientSecretCopy.vue';
 
 export default defineComponent({
+  components: { ClientSecretCopy },
   emits: [
     // REQUIRED; need to specify some events that your
     // component will emit through useDialogPluginComponent()
     ...useDialogPluginComponent.emits,
   ],
   setup() {
-    const $q = useQuasar();
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
     const persistent = ref(false);
@@ -84,15 +69,6 @@ export default defineComponent({
 
       newSecret.value = 'BPSndMgH6VSAqYc3';
       isFetchingSecret.value = false;
-    };
-
-    const copySecret = () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      copy(newSecret.value);
-      $q.notify({
-        message: 'Secret copied to clipboard',
-        color: 'positive',
-      });
     };
 
     const formFields = ref({
@@ -117,7 +93,6 @@ export default defineComponent({
       fetchSecret,
       persistent,
       newSecret,
-      copySecret,
     };
   },
 });
