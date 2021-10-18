@@ -6,7 +6,7 @@
           <div class="col col-12 text-h6 q-mb-md row items-center">
             <div class="col">Edit client</div>
             <div class="col-auto">
-              <q-btn type="submit" flat round color="negative" icon="delete" />
+              <q-btn flat round color="negative" icon="delete" />
             </div>
           </div>
 
