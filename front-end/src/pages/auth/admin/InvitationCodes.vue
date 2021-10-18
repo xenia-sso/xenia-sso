@@ -1,14 +1,22 @@
 <template>
-  <q-checkbox :model-value="anyUserCanRegister" @click="confirmToggleAnyUserCanRegister()"
-    >Any user can register</q-checkbox
-  >
-  <q-table v-if="!anyUserCanRegister" :columns="columns" :rows="rows" row-key="code">
-    <template #body-cell-delete="props">
-      <q-td :props="props" class="text-center">
-        <q-btn color="negative" icon="delete" flat round @click="deleteCode(props.row.code)"></q-btn>
-      </q-td>
-    </template>
-  </q-table>
+  <q-checkbox :model-value="anyUserCanRegister" @click="confirmToggleAnyUserCanRegister()">
+    Any user can register
+  </q-checkbox>
+  <template v-if="!anyUserCanRegister">
+    <div class="row items-center q-mt-sm">
+      <div class="col text-h6">Invitation codes</div>
+      <div class="col col-auto">
+        <q-btn icon="add" round color="primary" @click="createCode()" />
+      </div>
+    </div>
+    <q-table :columns="columns" :rows="rows" row-key="code">
+      <template #body-cell-delete="props">
+        <q-td :props="props" class="text-center">
+          <q-btn color="negative" icon="delete" flat round @click="deleteCode(props.row.code)"></q-btn>
+        </q-td>
+      </template>
+    </q-table>
+  </template>
 </template>
 
 <script lang="ts">
@@ -22,18 +30,32 @@ export default defineComponent({
     const anyUserCanRegister = ref(false);
 
     const confirmToggleAnyUserCanRegister = () => {
+      console.log('confirmToggleAnyUserCanRegister');
       if (!anyUserCanRegister.value) {
         $q.dialog({
           title: 'Warning',
           message: 'Do you really allow any user to register?',
-          cancel: true,
           persistent: false,
+          ok: {
+            flat: false,
+            color: 'negative',
+            label: 'confirm',
+          },
+          cancel: {
+            color: 'grey-5',
+            flat: true,
+          },
         }).onOk(() => {
           // TODO: implement
         });
       } else {
         // TODO: implement
       }
+    };
+
+    const createCode = () => {
+      console.log('Create code');
+      // TODO create code & insert at 1st position (visul effect)
     };
 
     const deleteCode = (code: string) => {
@@ -53,6 +75,7 @@ export default defineComponent({
       deleteCode,
       anyUserCanRegister,
       confirmToggleAnyUserCanRegister,
+      createCode,
     };
   },
 });

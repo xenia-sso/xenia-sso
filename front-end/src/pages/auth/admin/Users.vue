@@ -22,12 +22,21 @@ export default defineComponent({
     const $q = useQuasar();
 
     const confirmToggleUser = (user: { active: boolean; name: string }) => {
+      console.log('confirmToggleUser');
       if (user.active) {
         $q.dialog({
           title: 'Warning',
           message: `Do you really want to disable user ${user.name}?`,
-          cancel: true,
           persistent: false,
+          ok: {
+            flat: false,
+            color: 'negative',
+            label: 'confirm',
+          },
+          cancel: {
+            color: 'grey-5',
+            flat: true,
+          },
         }).onOk(() => {
           // TODO: implement
         });
@@ -37,11 +46,20 @@ export default defineComponent({
     };
 
     const confirmDeleteUser = (user: { active: boolean; name: string }) => {
+      console.log('confirmDeleteUser');
       $q.dialog({
         title: 'Warning',
         message: `Do you really want to remove user ${user.name}? This action cannot be undone.`,
-        cancel: true,
         persistent: false,
+        ok: {
+          flat: false,
+          color: 'negative',
+          label: 'confirm',
+        },
+        cancel: {
+          color: 'grey-5',
+          flat: true,
+        },
       }).onOk(() => {
         // TODO: implement
       });
