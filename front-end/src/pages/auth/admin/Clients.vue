@@ -1,4 +1,10 @@
 <template>
+  <div class="row items-center">
+    <div class="col text-h6">Clients</div>
+    <div class="col col-auto">
+      <q-btn round icon="add" color="primary" />
+    </div>
+  </div>
   <q-table :columns="columns" :rows="rows">
     <template #body-cell-allUsers="props">
       <q-td :props="props" class="text-center">
