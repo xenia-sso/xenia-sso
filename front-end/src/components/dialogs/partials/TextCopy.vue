@@ -1,10 +1,10 @@
 <template>
   <div class="col col-12 row items-center">
     <div class="col q-mr-sm">
-      <div class="q-px-md q-py-sm text-dark secret-section">{{ secret }}</div>
+      <div class="q-px-md q-py-sm text-dark secret-section">{{ text }}</div>
     </div>
     <div class="col col-auto">
-      <q-btn flat round icon="content_copy" color="primary" @click="copySecret()" />
+      <q-btn flat round icon="content_copy" color="primary" @click="copyText()" />
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ import copy from 'copy-to-clipboard';
 
 export default defineComponent({
   props: {
-    secret: {
+    text: {
       type: String,
       required: true,
     },
@@ -31,17 +31,17 @@ export default defineComponent({
   setup(props) {
     const $q = useQuasar();
 
-    const copySecret = () => {
+    const copyText = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      copy(props.secret);
+      copy(props.text);
       $q.notify({
-        message: 'Secret copied to clipboard',
+        message: 'Text copied to clipboard',
         color: 'positive',
       });
     };
 
     return {
-      copySecret,
+      copyText,
     };
   },
 });

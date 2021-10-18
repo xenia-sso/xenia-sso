@@ -32,7 +32,7 @@
             </q-btn>
           </div>
 
-          <client-secret-copy v-if="newSecret" :secret="newSecret" />
+          <text-copy v-if="newSecret" :text="newSecret" />
         </div>
       </q-form>
     </q-card>
@@ -43,10 +43,10 @@
 import { defineComponent, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
 import { RULES } from 'src/utils/form-validation';
-import ClientSecretCopy from './partials/ClientSecretCopy.vue';
+import TextCopy from 'src/components/dialogs/partials/TextCopy.vue';
 
 export default defineComponent({
-  components: { ClientSecretCopy },
+  components: { TextCopy },
   emits: [
     // REQUIRED; need to specify some events that your
     // component will emit through useDialogPluginComponent()

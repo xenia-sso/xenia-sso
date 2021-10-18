@@ -2,7 +2,7 @@
   <div class="row items-center">
     <div class="col text-h6">Clients</div>
     <div class="col col-auto">
-      <q-btn round icon="add" color="primary" />
+      <q-btn round icon="add" color="primary" @click="createOrEditClient()" />
     </div>
   </div>
   <q-table :columns="columns" :rows="rows">
@@ -13,12 +13,12 @@
     </template>
     <template #body-cell-secret="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="grey-9" icon="vpn_key" flat round @click="editClientSecret"></q-btn>
+        <q-btn color="grey-9" icon="vpn_key" flat round @click="editClientSecret()"></q-btn>
       </q-td>
     </template>
     <template #body-cell-edit="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="primary" icon="edit" flat round @click="editClient"></q-btn>
+        <q-btn color="primary" icon="edit" flat round @click="createOrEditClient(props.row)"></q-btn>
       </q-td>
     </template>
   </q-table>
@@ -29,6 +29,8 @@ import { defineComponent } from 'vue';
 import { useQuasar } from 'quasar';
 import ClientEdit from 'src/components/dialogs/ClientEdit.vue';
 import ClientSecret from 'src/components/dialogs/ClientSecret.vue';
+import { Client } from 'src/models/clients';
+import ClientCreated from '../../../components/dialogs/ClientCreated.vue';
 
 export default defineComponent({
   setup() {
@@ -42,11 +44,16 @@ export default defineComponent({
       });
     };
 
-    const editClient = () => {
+    const createOrEditClient = (client?: Client) => {
       $q.dialog({
         component: ClientEdit,
-      }).onOk((password: string) => {
-        console.log('onOK', password);
+        componentProps: { client },
+      }).onOk((data: { client: Client; secret?: string }) => {
+        $q.dialog({
+          component: ClientCreated,
+          componentProps: { id: data.client.id, secret: data.secret },
+          persistent: true,
+        });
       });
     };
 
@@ -59,15 +66,15 @@ export default defineComponent({
     ];
 
     const rows = [
-      { name: 'Client 1', id: '9fd231bcd4f5ed5c', allUsers: true },
-      { name: 'Client 2', id: '9fd231bcd4f6ed5c', allUsers: false },
+      { name: 'Client 1', id: '9fd231bcd4f5ed5c', allUsers: true, grantedUsers: [] },
+      { name: 'Client 2', id: '9fd231bcd4f6ed5c', allUsers: false, grantedUsers: [] },
     ];
 
     return {
       columns,
       rows,
       editClientSecret,
-      editClient,
+      createOrEditClient,
     };
   },
 });
