@@ -18,7 +18,7 @@
               :rules="[RULES.required, RULES.email]"
             ></q-input>
           </div>
-          <div class="col col-6">
+          <div class="col col-xs-12 col-sm-6">
             <q-input
               v-model.trim="profileFormFields.firstName"
               filled
@@ -29,7 +29,7 @@
               :rules="[RULES.required]"
             ></q-input>
           </div>
-          <div class="col col-6">
+          <div class="col col-xs-12 col-sm-6">
             <q-input
               v-model.trim="profileFormFields.lastName"
               filled
