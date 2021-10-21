@@ -14,13 +14,7 @@ import { config, rootDir } from "./config";
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
   mount: {
-    "/rest": [`${rootDir}/controllers/**/*.ts`],
-  },
-  views: {
-    root: `${rootDir}/views`,
-    extensions: {
-      ejs: "ejs",
-    },
+    "/api": [`${rootDir}/controllers/**/*.ts`],
   },
   exclude: ["**/*.spec.ts"],
 })
