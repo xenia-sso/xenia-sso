@@ -11,7 +11,7 @@ import { config, rootDir } from "./config";
 @Configuration({
   ...config,
   acceptMimes: ["application/json"],
-  httpPort: process.env.PORT || 8083,
+  httpPort: process.env.PORT || 3000,
   httpsPort: false, // CHANGE
   mount: {
     "/api": [`${rootDir}/controllers/**/*.ts`],
