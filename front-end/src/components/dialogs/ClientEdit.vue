@@ -46,7 +46,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
-import { RULES } from 'src/utils/form-validation';
+import { RULES } from 'src/ts/utils/form-validation';
 import { Client } from '../../models/clients';
 
 export default defineComponent({

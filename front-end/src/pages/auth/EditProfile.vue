@@ -71,7 +71,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { RULES } from 'src/utils/form-validation';
+import { RULES } from 'src/ts/utils/form-validation';
 import ChangePassword from 'src/components/dialogs/ChangePassword.vue';
 
 export default defineComponent({

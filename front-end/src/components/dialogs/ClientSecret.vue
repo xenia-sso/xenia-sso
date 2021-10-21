@@ -42,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar';
-import { RULES } from 'src/utils/form-validation';
+import { RULES } from 'src/ts/utils/form-validation';
 import TextCopy from 'src/components/dialogs/partials/TextCopy.vue';
 
 export default defineComponent({
