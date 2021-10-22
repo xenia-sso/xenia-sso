@@ -10,7 +10,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/index.js",
     "test:lint": "eslint src --ext .ts",
     "test:lint:fix": "eslint src --ext .ts --fix",
-    "prettier": "prettier '{src,test}/**/*.ts' --write"
+    "prettier": "prettier src/**/*.ts --write"
   },
   "dependencies": {
     "@tsed/ajv": "6.75.4",
