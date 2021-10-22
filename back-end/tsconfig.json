@@ -20,24 +20,11 @@
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "lib": [
-      "es7",
-      "dom",
-      "ESNext.AsyncIterable"
-    ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "lib": ["es7", "dom", "ESNext.AsyncIterable"],
+    "typeRoots": ["./node_modules/@types", "src/types"]
   },
-  "include": [
-    "./src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "./public",
-    "dist",
-    "test"
-  ],
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "./public", "dist", "test"],
   "linterOptions": {
     "exclude": []
   }

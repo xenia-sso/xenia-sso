@@ -4,9 +4,9 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { users } from "src/data/sample";
 
 @Middleware()
-export class AuthMiddleware {
+export class RefreshTokenMiddleware {
   use(@Req() req: Req, @Context() ctx: Context) {
-    const token = req.headers.authorization;
+    const token = req.cookies?.["sso_refresh_token"];
     if (!token) {
       throw new Unauthorized("Unauthorized");
     }
@@ -18,7 +18,7 @@ export class AuthMiddleware {
       throw new Unauthorized("Unauthorized");
     }
 
-    if (decoded.refresh) {
+    if (!decoded.refresh) {
       throw new Unauthorized("Unauthorized");
     }
 

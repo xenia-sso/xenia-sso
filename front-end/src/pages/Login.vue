@@ -36,19 +36,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
+import { call, login } from 'src/ts/utils/api';
 
 export default defineComponent({
   setup() {
-    const submit = () => {
-      console.log('submit');
-    };
+    onMounted(async () => {
+      try {
+        const user = (await call('/api/auth/user')).data;
+        console.log(user);
+      } catch {
+        // fail silently
+      }
+    });
 
     const formFields = ref({
       email: '',
       password: '',
     });
+
+    const submit = async () => {
+      try {
+        const user = await login(formFields.value.email, formFields.value.password);
+        console.log(user);
+      } catch {
+        // TODO: handle
+      }
+    };
 
     return {
       RULES,
