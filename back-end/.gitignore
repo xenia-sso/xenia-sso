@@ -50,3 +50,6 @@ test/**/*.js.map
 # Project
 /public
 /dist
+
+# Environment variables
+.env
