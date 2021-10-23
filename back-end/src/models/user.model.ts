@@ -1,6 +1,6 @@
 import { OnSerialize } from "@tsed/json-mapper";
 import { Model, ObjectID, Unique } from "@tsed/mongoose";
-import { Email, MinLength, Required } from "@tsed/schema";
+import { CollectionOf, Default, Email, MinLength, Required } from "@tsed/schema";
 
 @Model({ collection: "users" })
 export class UserModel {
@@ -24,4 +24,8 @@ export class UserModel {
   @Required()
   @MinLength(2)
   lastName: string;
+
+  @CollectionOf(String)
+  @Default(() => [])
+  roles: string[];
 }
