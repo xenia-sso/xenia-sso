@@ -10,7 +10,7 @@
     <q-drawer v-model="leftDrawerOpen" overlay bordered>
       <q-list>
         <q-item-label header>Menu</q-item-label>
-        <MenuLink v-for="link in menuLinks" :key="link.title" v-bind="link" />
+        <MenuLink v-for="route in availableRoutes" :key="route.path" :path="route.path" v-bind="route.meta" />
       </q-list>
     </q-drawer>
 
@@ -33,9 +33,10 @@
 
 <script lang="ts">
 import MenuLink from 'src/components/MenuLink.vue';
-
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import routes from 'src/router/routes';
+import { useCurrentUser } from 'src/composables/current-user';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -45,37 +46,31 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const leftDrawerOpen = ref(false);
+    const { currentUser } = useCurrentUser();
 
-    const menuLinks = [
-      {
-        title: 'My Profile',
-        icon: 'account_circle',
-        route: '/auth/profile',
-      },
-      {
-        title: 'Clients',
-        icon: 'dns',
-        route: '/auth/admin/clients',
-      },
-      {
-        title: 'Users',
-        icon: 'people',
-        route: '/auth/admin/users',
-      },
-      {
-        title: 'Invitation codes',
-        icon: 'group_add',
-        route: '/auth/admin/invitation-codes',
-      },
-      {
-        title: 'Logout',
-        icon: 'logout',
-        route: '/auth/logout',
-      },
-    ];
+    const availableRoutes = computed(() => {
+      return routes.filter((route) => {
+        if (route.redirect) {
+          return false;
+        }
+        if (!route.path.startsWith('/auth')) {
+          return false;
+        }
+        if (!route.meta?.requiresAuth) {
+          return true;
+        }
+        if (!currentUser.value) {
+          return false;
+        }
+        if (!route.meta?.roles) {
+          return true;
+        }
+        return (route.meta.roles as string[]).every((r: string) => currentUser.value!.roles.includes(r));
+      });
+    });
 
     return {
-      menuLinks,
+      availableRoutes,
       leftDrawerOpen,
       route,
       toggleLeftDrawer() {

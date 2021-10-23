@@ -6,9 +6,6 @@
 
     <q-item-section>
       <q-item-label>{{ title }}</q-item-label>
-      <q-item-label v-if="caption" caption>
-        {{ caption }}
-      </q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -30,7 +27,7 @@ export default defineComponent({
       default: '',
     },
 
-    route: {
+    path: {
       type: String,
       default: '#',
     },
@@ -43,7 +40,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const navigate = () => {
-      void router.push(props.route);
+      void router.push(props.path);
     };
 
     return {

@@ -21,25 +21,25 @@ const routes: RouteRecordRaw[] = [
     path: '/auth/profile',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/EditProfile.vue') }],
-    meta: { requiresAuth: true, roles: [] },
+    meta: { requiresAuth: true, roles: [], title: 'My Profile', icon: 'account_circle' },
   },
   {
     path: '/auth/admin/clients',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Clients.vue') }],
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['admin'], title: 'Clients', icon: 'dns' },
   },
   {
     path: '/auth/admin/users',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Users.vue') }],
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['admin'], title: 'Users', icon: 'people' },
   },
   {
     path: '/auth/admin/invitation-codes',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/InvitationCodes.vue') }],
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['admin'], title: 'Invitation codes', icon: 'group_add' },
   },
   {
     path: '/auth/logout',
@@ -53,6 +53,7 @@ const routes: RouteRecordRaw[] = [
         currentUser.value = undefined;
       }
     },
+    meta: { title: 'Logout', icon: 'logout' },
   },
 
   // Always leave this as last one,
