@@ -23,7 +23,6 @@ export class AuthController {
   @Get("/user")
   @UseAuth(AuthMiddleware)
   getUser(@Context() ctx: Context) {
-    console.log(ctx.get("user"));
     return ctx.get("user");
   }
 
@@ -63,5 +62,12 @@ export class AuthController {
         expiresIn: "15 min",
       }),
     };
+  }
+
+  @Post("/logout")
+  @UseAuth(AuthMiddleware)
+  async logout(@Res() res: Res) {
+    res.clearCookie("sso_refresh_token");
+    return { success: true };
   }
 }

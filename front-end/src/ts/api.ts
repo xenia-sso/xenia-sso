@@ -112,3 +112,7 @@ export const login = async (email: string, password: string) => {
   jwt = data.token;
   return data.user;
 };
+
+export const logout = () => {
+  return call('/api/auth/logout', { method: 'POST' });
+};

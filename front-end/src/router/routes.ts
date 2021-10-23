@@ -1,3 +1,5 @@
+import { useCurrentUser } from 'src/composables/current-user';
+import { logout } from 'src/ts/api';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -22,14 +24,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [] },
   },
   {
-    path: '/auth/logout',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/auth/EditProfile.vue') }],
-    beforeEnter: (to, from, next) => {
-      next('/login');
-    },
-  },
-  {
     path: '/auth/admin/clients',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Clients.vue') }],
@@ -46,6 +40,19 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/InvitationCodes.vue') }],
     meta: { requiresAuth: true, roles: ['admin'] },
+  },
+  {
+    path: '/auth/logout',
+    component: () => import('layouts/MainLayout.vue'),
+    beforeEnter: async () => {
+      const { currentUser } = useCurrentUser();
+      try {
+        await logout();
+      } catch {
+      } finally {
+        currentUser.value = undefined;
+      }
+    },
   },
 
   // Always leave this as last one,
