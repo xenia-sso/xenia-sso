@@ -3,6 +3,15 @@
     <div class="row q-col-gutter-sm">
       <div class="col col-12 text-h6">Login</div>
 
+      <div v-if="error" class="col col-12">
+        <q-banner class="bg-negative">
+          <template v-slot:avatar>
+            <q-icon name="cancel" />
+          </template>
+          <span>{{ error }}</span>
+        </q-banner>
+      </div>
+
       <div class="col col-12">
         <q-input
           v-model.trim="formFields.email"
@@ -29,27 +38,21 @@
       </div>
 
       <div class="col col-12 q-mt-sm">
-        <q-btn type="submit" color="primary" class="full-width">Continue</q-btn>
+        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">Continue</q-btn>
       </div>
     </div>
   </q-form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
-import { call, login } from 'src/ts/utils/api';
+import { CallError, login } from 'src/ts/utils/api';
 
 export default defineComponent({
   setup() {
-    onMounted(async () => {
-      try {
-        const user = (await call('/api/auth/user')).data;
-        console.log(user);
-      } catch {
-        // fail silently
-      }
-    });
+    const isLoading = ref(false);
+    const error = ref('');
 
     const formFields = ref({
       email: '',
@@ -57,18 +60,30 @@ export default defineComponent({
     });
 
     const submit = async () => {
+      isLoading.value = true;
+      error.value = '';
       try {
-        const user = await login(formFields.value.email, formFields.value.password);
-        console.log(user);
-      } catch {
-        // TODO: handle
+        await login(formFields.value.email, formFields.value.password);
+      } catch (e) {
+        if (!(e instanceof CallError)) {
+          return;
+        }
+
+        if (e.status === 401) {
+          error.value = 'Wrong credentials';
+        } else {
+          error.value = e.message;
+        }
       }
+      isLoading.value = false;
     };
 
     return {
       RULES,
       formFields,
       submit,
+      error,
+      isLoading,
     };
   },
 });
