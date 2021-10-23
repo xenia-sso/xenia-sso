@@ -19,6 +19,7 @@ const routes: RouteRecordRaw[] = [
     path: '/auth/profile',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/EditProfile.vue') }],
+    meta: { requiresAuth: true, roles: [] },
   },
   {
     path: '/auth/logout',
@@ -32,16 +33,19 @@ const routes: RouteRecordRaw[] = [
     path: '/auth/admin/clients',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Clients.vue') }],
+    meta: { requiresAuth: true, roles: ['admin'] },
   },
   {
     path: '/auth/admin/users',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Users.vue') }],
+    meta: { requiresAuth: true, roles: ['admin'] },
   },
   {
     path: '/auth/admin/invitation-codes',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/InvitationCodes.vue') }],
+    meta: { requiresAuth: true, roles: ['admin'] },
   },
 
   // Always leave this as last one,

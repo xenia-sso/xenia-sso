@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { call, User } from 'src/ts/api';
 
 const currentUser = ref<User>();
@@ -10,10 +10,20 @@ const init = async () => {
   } catch {}
 };
 
-onMounted(() => {
-  void init();
-});
+const onCurrentUserChangeCallbacks: ((user: User | undefined) => void)[] = [];
+const onCurrentUserChange = (cb: (user: User | undefined) => void) => {
+  onCurrentUserChangeCallbacks.push(cb);
+};
+
+watch(
+  () => currentUser.value,
+  () => {
+    onCurrentUserChangeCallbacks.forEach((cb) => cb(currentUser.value));
+  }
+);
 
 export const useCurrentUser = () => ({
+  init,
   currentUser,
+  onCurrentUserChange,
 });

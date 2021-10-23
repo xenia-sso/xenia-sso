@@ -1,6 +1,17 @@
 import { route } from 'quasar/wrappers';
-import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { useCurrentUser } from 'src/composables/current-user';
+import { User } from 'src/ts/api';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteLocationNormalized,
+  NavigationGuardNext,
+} from 'vue-router';
 import routes from './routes';
+
+const { currentUser, onCurrentUserChange } = useCurrentUser();
 
 /*
  * If not building with SSR mode, you can
@@ -26,6 +37,38 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+  });
+
+  onCurrentUserChange((user: User | undefined) => {
+    if (user) {
+      void Router.push('/auth/profile');
+    } else {
+      void Router.push('/login');
+    }
+  });
+
+  Router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    if (!to.meta?.requiresAuth) {
+      next();
+      return;
+    }
+
+    if (!currentUser.value) {
+      next('/login');
+      return;
+    }
+
+    if (!to.meta.roles) {
+      next();
+      return;
+    }
+
+    if (!(to.meta.roles as string[]).every((r) => currentUser.value?.roles.includes(r))) {
+      next('/login');
+      return;
+    }
+
+    next();
   });
 
   return Router;
