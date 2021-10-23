@@ -17,6 +17,13 @@ import { config, rootDir } from "./config";
     "/api": [`${rootDir}/controllers/**/*.ts`],
   },
   exclude: ["**/*.spec.ts"],
+  mongoose: [
+    {
+      id: "default",
+      url: process.env.MONGODB_URI,
+      connectionOptions: {},
+    },
+  ],
 })
 export class Server {
   @Inject()

@@ -1,10 +1,10 @@
-import { Controller, Get, UseAuth, UseBefore, Context, Req, Res, BodyParams } from "@tsed/common";
+import { Controller, Get, UseAuth, UseBefore, Context, Req, Res, BodyParams, Inject } from "@tsed/common";
 import { ContentType, Email, Post, Required } from "@tsed/schema";
 import { AuthMiddleware } from "src/middlewares/auth.middleware";
 import { RefreshTokenMiddleware } from "src/middlewares/refresh-token.middleware";
 import jwt from "jsonwebtoken";
-import { users } from "src/data/sample";
 import { Unauthorized } from "@tsed/exceptions";
+import { UsersRepository } from "src/services/users.repository";
 
 class AuthenticateBody {
   @Required()
@@ -18,6 +18,8 @@ class AuthenticateBody {
 @Controller("/auth")
 @ContentType("application/json")
 export class AuthController {
+  @Inject(UsersRepository) private repository: UsersRepository;
+
   @Get("/user")
   @UseAuth(AuthMiddleware)
   getUser(@Context() ctx: Context) {
@@ -25,9 +27,9 @@ export class AuthController {
   }
 
   @Post("/login")
-  authenticate(@Res() res: Res, @BodyParams() body: AuthenticateBody) {
-    const user = users.find((u) => u.email === body.email);
-    if (!user || user.password !== body.password) {
+  async login(@Res() res: Res, @BodyParams() body: AuthenticateBody) {
+    const user = await this.repository.checkPassword(body.email, body.password);
+    if (!user) {
       throw new Unauthorized("Unauthorized");
     }
 
