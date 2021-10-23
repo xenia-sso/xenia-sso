@@ -12,6 +12,10 @@ export class UsersRepository {
     return this.model.find({});
   }
 
+  findById(id: string) {
+    return this.model.findById(id);
+  }
+
   async checkPassword(email: string, password: string) {
     const user = await this.model.findOne({ email });
     if (!user) {

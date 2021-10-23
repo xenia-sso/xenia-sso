@@ -23,6 +23,7 @@ export class AuthController {
   @Get("/user")
   @UseAuth(AuthMiddleware)
   getUser(@Context() ctx: Context) {
+    console.log(ctx.get("user"));
     return ctx.get("user");
   }
 
