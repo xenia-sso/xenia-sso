@@ -64,7 +64,7 @@ export default route(function (/* { store, ssrContext } */) {
     }
 
     if (!(to.meta.roles as string[]).every((r) => currentUser.value?.roles.includes(r))) {
-      next('/login');
+      next('/auth/profile');
       return;
     }
 
