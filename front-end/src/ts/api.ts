@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ref } from 'vue';
 
 const UNAUTHORIZED_STATUS = 401;
 
@@ -88,7 +87,7 @@ export const call = async <T>(
   }
 };
 
-interface User {
+export interface User {
   id: string;
   email: string;
   firstName: string;
@@ -96,7 +95,6 @@ interface User {
   roles: string[];
 }
 
-export const currentUser = ref<User>();
 export const login = async (email: string, password: string) => {
   const data = await call<{ token: string; user: User }>(
     '/api/auth/login',
@@ -113,12 +111,5 @@ export const login = async (email: string, password: string) => {
   );
 
   jwt = data.token;
-  currentUser.value = data.user;
-};
-
-export const init = async () => {
-  try {
-    const data = await call<User>('/api/auth/user');
-    currentUser.value = data;
-  } catch {}
+  return data.user;
 };

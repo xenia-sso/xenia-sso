@@ -47,7 +47,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
-import { CallError, login } from 'src/ts/utils/api';
+import { CallError, login } from 'src/ts/api';
+import { useCurrentUser } from 'src/composables/current-user';
 
 export default defineComponent({
   setup() {
@@ -63,7 +64,9 @@ export default defineComponent({
       isLoading.value = true;
       error.value = '';
       try {
-        await login(formFields.value.email, formFields.value.password);
+        const user = await login(formFields.value.email, formFields.value.password);
+        const { currentUser } = useCurrentUser();
+        currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
           return;
