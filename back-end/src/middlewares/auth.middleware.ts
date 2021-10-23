@@ -29,6 +29,11 @@ export class AuthMiddleware {
       throw new Unauthorized("Unauthorized");
     }
 
+    const options = ctx.endpoint.get(AuthMiddleware) || {};
+    if (options.role && !user.roles.includes(options.role)) {
+      throw new Unauthorized("Unauthorized");
+    }
+
     ctx.set("user", user);
   }
 }
