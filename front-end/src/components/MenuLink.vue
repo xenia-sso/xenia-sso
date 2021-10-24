@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable @click="navigate()">
+  <q-item clickable :active="active" @click="navigate()">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -43,8 +43,13 @@ export default defineComponent({
       void router.push(props.path);
     };
 
+    const active = computed(() => {
+      return router.currentRoute.value.path === props.path;
+    });
+
     return {
       navigate,
+      active,
     };
   },
 });
