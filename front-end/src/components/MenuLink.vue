@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable :active="active" @click="navigate()">
+  <q-item clickable :active="active" active-class="text-white bg-grey-9" @click="navigate()">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
