@@ -1,9 +1,7 @@
 <template>
-  <q-table :columns="columns" :rows="rows">
-    <template #body-cell-active="props">
-      <q-td :props="props" class="text-center">
-        <q-toggle :model-value="props.value" @click="confirmToggleUser(props.row)"></q-toggle>
-      </q-td>
+  <q-table :columns="columns" :rows="users">
+    <template #body-cell-fullname="props">
+      <q-td :props="props" class="text-center">{{ props.row.firstName }}&nbsp;{{ props.row.lastName }}</q-td>
     </template>
     <template #body-cell-delete="props">
       <q-td :props="props" class="text-center">
@@ -14,42 +12,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { call, User } from 'src/ts/api';
+import { useCurrentUser } from 'src/composables/current-user';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
 
-    const confirmToggleUser = (user: { active: boolean; name: string }) => {
-      console.log('confirmToggleUser');
-      if (user.active) {
-        $q.dialog({
-          title: 'Warning',
-          message: `Do you really want to disable user ${user.name}?`,
-          persistent: false,
-          ok: {
-            flat: false,
-            color: 'negative',
-            label: 'confirm',
-          },
-          cancel: {
-            color: 'grey-5',
-            flat: true,
-          },
-        }).onOk(() => {
-          // TODO: implement
-        });
-      } else {
-        // TODO: implement
-      }
-    };
-
-    const confirmDeleteUser = (user: { active: boolean; name: string }) => {
-      console.log('confirmDeleteUser');
+    const confirmDeleteUser = (user: User) => {
       $q.dialog({
         title: 'Warning',
-        message: `Do you really want to remove user ${user.name}? This action cannot be undone.`,
+        message: `Do you really want to remove user ${user.firstName} ${user.lastName}? This action cannot be undone.`,
         persistent: false,
         ok: {
           flat: false,
@@ -60,26 +35,30 @@ export default defineComponent({
           color: 'grey-5',
           flat: true,
         },
-      }).onOk(() => {
-        // TODO: implement
+      }).onOk(async () => {
+        try {
+          await call('/api/admin/users/' + user.id, { method: 'DELETE' });
+        } catch {
+          $q.notify({ type: 'negative', message: 'Unable to delete user' });
+        }
       });
     };
 
     const columns = [
-      { label: 'Name', field: 'name', sortable: true, align: 'left' },
-      { name: 'active', label: 'Active', field: 'active', sortable: false, align: 'left' },
-      { name: 'delete', label: '', field: 'delete', sortable: false, align: 'right' },
+      { name: 'fullname', label: 'Name', sortable: true, align: 'left' },
+      { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
-    const rows = [
-      { name: 'User 1', active: false },
-      { name: 'User 2', active: true },
-    ];
+    const { currentUser } = useCurrentUser();
+    const users = ref<User[]>([]);
+    onMounted(async () => {
+      const allUsers = await call<User[]>('/api/admin/users');
+      users.value = allUsers.filter((u) => u.id !== currentUser.value!.id);
+    });
 
     return {
       columns,
-      rows,
-      confirmToggleUser,
+      users,
       confirmDeleteUser,
     };
   },

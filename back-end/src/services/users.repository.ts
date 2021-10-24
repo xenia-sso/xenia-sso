@@ -38,4 +38,8 @@ export class UsersRepository {
 
     return model;
   }
+
+  delete(id: string) {
+    return this.model.findByIdAndDelete(id);
+  }
 }
