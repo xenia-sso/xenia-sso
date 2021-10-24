@@ -41,7 +41,12 @@ export default route(function (/* { store, ssrContext } */) {
 
   onCurrentUserChange((user: User | undefined) => {
     if (user) {
-      void Router.push('/auth/profile');
+      const redirectBase64QueryParam = Router.currentRoute.value.query.redirect as string;
+      if (!redirectBase64QueryParam) {
+        void Router.push('/auth/profile');
+        return;
+      }
+      void Router.push(atob(redirectBase64QueryParam));
     } else {
       void Router.push('/login');
     }
@@ -54,7 +59,7 @@ export default route(function (/* { store, ssrContext } */) {
     }
 
     if (!currentUser.value) {
-      next('/login');
+      next('/login?redirect=' + btoa(to.fullPath));
       return;
     }
 
