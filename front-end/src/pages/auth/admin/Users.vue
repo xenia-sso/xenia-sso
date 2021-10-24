@@ -46,6 +46,7 @@ export default defineComponent({
 
     const columns = [
       { name: 'fullname', label: 'Name', sortable: true, align: 'left' },
+      { label: 'Email', field: 'email', sortable: true, align: 'left' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
