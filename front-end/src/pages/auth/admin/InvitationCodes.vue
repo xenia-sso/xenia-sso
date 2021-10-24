@@ -1,81 +1,78 @@
 <template>
-  <q-checkbox :model-value="anyUserCanRegister" @click="confirmToggleAnyUserCanRegister()">
-    Any user can register
-  </q-checkbox>
-  <template v-if="!anyUserCanRegister">
-    <div class="row items-center q-mt-sm">
-      <div class="col text-h6">Invitation codes</div>
-      <div class="col col-auto">
-        <q-btn icon="add" round color="primary" @click="createCode()" />
-      </div>
+  <div class="row items-center q-mt-sm">
+    <div class="col text-h6">Invitation codes</div>
+    <div class="col col-auto">
+      <q-btn icon="add" round color="primary" :disable="isLoading" @click="createCode()" />
     </div>
-    <q-table :columns="columns" :rows="rows" row-key="code">
-      <template #body-cell-delete="props">
-        <q-td :props="props" class="text-center">
-          <q-btn color="negative" icon="delete" flat round @click="deleteCode(props.row.code)"></q-btn>
-        </q-td>
-      </template>
-    </q-table>
-  </template>
+  </div>
+  <q-table :columns="columns" :rows="invitationCodes" row-key="code">
+    <template #body-cell-delete="props">
+      <q-td :props="props" class="text-center">
+        <q-btn color="negative" icon="delete" flat round :disable="isLoading" @click="deleteCode(props.row)"></q-btn>
+      </q-td>
+    </template>
+  </q-table>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { call } from 'src/ts/api';
+import { defineComponent, ref, onMounted } from 'vue';
+
+interface InvitationCode {
+  id: string;
+}
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
 
-    const anyUserCanRegister = ref(false);
+    const isLoading = ref(false);
 
-    const confirmToggleAnyUserCanRegister = () => {
-      console.log('confirmToggleAnyUserCanRegister');
-      if (!anyUserCanRegister.value) {
-        $q.dialog({
-          title: 'Warning',
-          message: 'Do you really allow any user to register?',
-          persistent: false,
-          ok: {
-            flat: false,
-            color: 'negative',
-            label: 'confirm',
-          },
-          cancel: {
-            color: 'grey-5',
-            flat: true,
-          },
-        }).onOk(() => {
-          // TODO: implement
-        });
-      } else {
-        // TODO: implement
+    const createCode = async () => {
+      isLoading.value = true;
+      try {
+        const code = await call<InvitationCode>('/api/admin/invitation-codes', { method: 'POST' });
+        // create code & insert at 1st position (visul effect)
+        invitationCodes.value.unshift(code);
+      } catch {
+        $q.notify({ type: 'negative', message: 'Unable to create code.' });
+      } finally {
+        isLoading.value = false;
       }
     };
 
-    const createCode = () => {
-      console.log('Create code');
-      // TODO create code & insert at 1st position (visul effect)
-    };
-
-    const deleteCode = (code: string) => {
-      console.log('deleteCode: ', code);
+    const deleteCode = async (code: InvitationCode) => {
+      isLoading.value = true;
+      try {
+        await call<InvitationCode>(`/api/admin/invitation-codes/${code.id}`, { method: 'DELETE' });
+        const codeIndex = invitationCodes.value.findIndex((c) => c.id === code.id);
+        if (codeIndex !== -1) {
+          invitationCodes.value.splice(codeIndex, 1);
+        }
+      } catch {
+        $q.notify({ type: 'negative', message: 'Unable to delete code.' });
+      } finally {
+        isLoading.value = false;
+      }
     };
 
     const columns = [
-      { label: 'Code', field: 'code', sortable: true, align: 'left' },
-      { name: 'delete', label: '', field: 'delete', sortable: false, align: 'right' },
+      { label: 'Code', field: 'id', sortable: true, align: 'left' },
+      { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
-    const rows = [{ code: 'vYKPtmvCAAgl26OJ' }, { code: 'lSMx1EOLl6ZYYmCf' }];
+    const invitationCodes = ref<InvitationCode[]>([]);
+    onMounted(async () => {
+      invitationCodes.value = await call<InvitationCode[]>('/api/admin/invitation-codes');
+    });
 
     return {
       columns,
-      rows,
+      invitationCodes,
       deleteCode,
-      anyUserCanRegister,
-      confirmToggleAnyUserCanRegister,
       createCode,
+      isLoading,
     };
   },
 });
