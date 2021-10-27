@@ -68,6 +68,7 @@ export default defineComponent({
             component: ClientCreated,
             componentProps: { id: data.client.id, secret },
           });
+          clients.value.unshift(data.client);
         } catch {
           $q.notify({ type: 'negative', message: 'Unable to get client secret.' });
         }
