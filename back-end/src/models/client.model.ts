@@ -1,6 +1,6 @@
 import { OnDeserialize } from "@tsed/json-mapper";
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import { Required } from "@tsed/schema";
+import { Ignore, Required } from "@tsed/schema";
 import { UserModel } from "./user.model";
 
 @Model({ collection: "clients" })
@@ -14,6 +14,9 @@ export class ClientModel {
   })
   @ObjectID("id")
   _id: string;
+
+  @Ignore()
+  secret: string;
 
   @Required()
   name: string;

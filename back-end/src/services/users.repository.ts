@@ -34,7 +34,7 @@ export class UsersRepository {
       ...obj,
       password: await encryptPassword(obj.password),
     });
-    model.save();
+    await model.save();
 
     return model;
   }

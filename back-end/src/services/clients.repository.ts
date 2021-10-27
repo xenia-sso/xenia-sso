@@ -1,6 +1,9 @@
 import { Inject, Injectable } from "@tsed/di";
+import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { ClientModel } from "../models/client.model";
+import { encryptPassword } from "../utils/bcrypt";
+import { uuid } from "uuidv4";
 
 @Injectable()
 export class ClientsRepository {
@@ -13,9 +16,24 @@ export class ClientsRepository {
 
   async create(obj: ClientModel) {
     const model = await this.model.create(obj);
-    model.save();
+    model.secret = "";
+    await model.save();
 
     return model;
+  }
+
+  async resetSecret(id: string) {
+    const model = await this.model.findById(id);
+    if (!model) {
+      throw new NotFound("Not Found");
+    }
+    const secret = uuid();
+    model.secret = await encryptPassword(secret);
+    await model.save();
+
+    return {
+      secret,
+    };
   }
 
   delete(id: string) {
