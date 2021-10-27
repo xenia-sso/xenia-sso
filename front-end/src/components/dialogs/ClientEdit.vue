@@ -45,9 +45,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType } from 'vue';
-import { useDialogPluginComponent } from 'quasar';
+import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import { Client } from '../../models/clients';
+import { call } from '../../ts/api';
 
 export default defineComponent({
   emits: [
@@ -62,6 +63,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const $q = useQuasar();
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
     const isEditing = computed(() => !!props.client);
@@ -72,12 +74,17 @@ export default defineComponent({
       grantedUsers: isEditing.value ? props.client!.grantedUsers.concat() : [],
     });
 
-    const submit = () => {
-      console.log('submit');
-      onDialogOK({
-        client: { id: '123123123123123' },
-        secret: isEditing.value ? undefined : 'fe56c2b665a89898',
-      });
+    const submit = async () => {
+      try {
+        onDialogOK({
+          client: await call<Client>('/api/admin/clients', {
+            method: 'POST',
+            body: formFields.value,
+          }),
+        });
+      } catch {
+        $q.notify({ type: 'negative', message: 'Unable to create client.' });
+      }
     };
 
     const allUsers = ['User 1', 'User 2'];

@@ -1,6 +1,6 @@
 export type Client = {
-  name: string;
   id: string;
+  name: string;
   allUsers: boolean;
   grantedUsers: string[];
 };

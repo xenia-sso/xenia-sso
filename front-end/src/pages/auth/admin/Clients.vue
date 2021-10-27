@@ -5,10 +5,14 @@
       <q-btn round icon="add" color="primary" @click="createOrEditClient()" />
     </div>
   </div>
-  <q-table :columns="columns" :rows="rows">
+  <q-table :columns="columns" :rows="clients">
     <template #body-cell-allUsers="props">
       <q-td :props="props" class="text-center">
-        <q-icon :name="props.value ? 'close' : 'check'" :color="props.value ? 'negative' : 'positive'" size="md" />
+        <q-icon
+          :name="props.value ? 'gpp_bad' : 'verified_user'"
+          :color="props.value ? 'warning' : 'positive'"
+          size="md"
+        />
       </q-td>
     </template>
     <template #body-cell-secret="props">
@@ -25,12 +29,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import ClientEdit from 'src/components/dialogs/ClientEdit.vue';
 import ClientSecret from 'src/components/dialogs/ClientSecret.vue';
 import { Client } from 'src/models/clients';
 import ClientCreated from '../../../components/dialogs/ClientCreated.vue';
+import { call } from '../../../ts/api';
 
 export default defineComponent({
   setup() {
@@ -45,37 +50,46 @@ export default defineComponent({
     };
 
     const createOrEditClient = (client?: Client) => {
+      const isCreationMode = !client;
+
       $q.dialog({
         component: ClientEdit,
         componentProps: { client },
-      }).onOk((data: { client: Client; secret?: string }) => {
-        if (!data.secret) {
-          // Edition mode
+      }).onOk(async (data: { client: Client }) => {
+        if (!isCreationMode) {
           return;
         }
-        $q.dialog({
-          component: ClientCreated,
-          componentProps: { id: data.client.id, secret: data.secret },
-        });
+
+        try {
+          const { secret } = await call<{ secret: string }>(`/api/admin/clients/secret/${data.client.id}`, {
+            method: 'PUT',
+          });
+          $q.dialog({
+            component: ClientCreated,
+            componentProps: { id: data.client.id, secret },
+          });
+        } catch {
+          $q.notify({ type: 'negative', message: 'Unable to get client secret.' });
+        }
       });
     };
 
     const columns = [
       { label: 'Name', field: 'name', sortable: true, align: 'left' },
       { label: 'Id', field: 'id', sortable: true, align: 'left' },
-      { name: 'secret', label: 'Secret', field: 'secret', sortable: false, align: 'left' },
-      { name: 'allUsers', label: 'All Users', field: 'allUsers', sortable: true, align: 'left' },
-      { name: 'edit', label: '', field: 'edit', sortable: false, align: 'right' },
+      { name: 'secret', label: 'Secret', sortable: false, align: 'left' },
+      { name: 'allUsers', label: 'Restricted', field: 'allUsers', sortable: true, align: 'left' },
+      { name: 'edit', label: '', sortable: false, align: 'right' },
     ];
 
-    const rows = [
-      { name: 'Client 1', id: '9fd231bcd4f5ed5c', allUsers: true, grantedUsers: [] },
-      { name: 'Client 2', id: '9fd231bcd4f6ed5c', allUsers: false, grantedUsers: [] },
-    ];
+    const clients = ref<Client[]>([]);
+    onMounted(async () => {
+      clients.value = await call<Client[]>('/api/admin/clients');
+    });
 
     return {
       columns,
-      rows,
+      clients,
       editClientSecret,
       createOrEditClient,
     };
