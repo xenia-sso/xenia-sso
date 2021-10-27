@@ -78,12 +78,12 @@ export default defineComponent({
       try {
         onDialogOK({
           client: await call<Client>('/api/admin/clients', {
-            method: 'POST',
+            method: isEditing.value ? 'PUT' : 'POST',
             body: formFields.value,
           }),
         });
       } catch {
-        $q.notify({ type: 'negative', message: 'Unable to create client.' });
+        $q.notify({ type: 'negative', message: 'Unable to ' + (isEditing.value ? 'edit' : 'create') + ' client.' });
       }
     };
 
