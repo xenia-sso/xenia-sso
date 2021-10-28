@@ -50,13 +50,17 @@ export default defineComponent({
     };
 
     const createOrEditClient = (client?: Client) => {
-      const isCreationMode = !client;
-
       $q.dialog({
         component: ClientEdit,
         componentProps: { client },
-      }).onOk(async (data: { client: Client }) => {
-        if (!isCreationMode) {
+      }).onOk(async (data: { type: 'edit' | 'create' | 'delete'; client: Client }) => {
+        if (data.type === 'edit') {
+          return;
+        } else if (data.type === 'delete') {
+          const clientIndex = clients.value.findIndex((c) => c.id === data.client.id);
+          if (clientIndex > -1) {
+            clients.value.splice(clientIndex, 1);
+          }
           return;
         }
 

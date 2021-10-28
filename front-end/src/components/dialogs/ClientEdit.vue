@@ -6,7 +6,7 @@
           <div class="col col-12 text-h6 q-mb-md row items-center">
             <div class="col">{{ isEditing ? 'Edit' : 'Create' }} client</div>
             <div class="col-auto">
-              <q-btn flat round color="negative" icon="delete" />
+              <q-btn v-if="client" flat round color="negative" icon="delete" @click="confirmDelete()" />
             </div>
           </div>
 
@@ -77,6 +77,7 @@ export default defineComponent({
     const submit = async () => {
       try {
         onDialogOK({
+          type: isEditing.value ? 'edit' : 'create',
           client: await call<Client>('/api/admin/clients', {
             method: isEditing.value ? 'PUT' : 'POST',
             body: formFields.value,
@@ -100,6 +101,33 @@ export default defineComponent({
       });
     };
 
+    const confirmDelete = () => {
+      if (!props.client) {
+        return;
+      }
+      $q.dialog({
+        title: 'Warning',
+        message: `Do you really want to remove client ${props.client.name}? This action cannot be undone.`,
+        persistent: false,
+        ok: {
+          flat: false,
+          color: 'negative',
+          label: 'confirm',
+        },
+        cancel: {
+          color: 'grey-5',
+          flat: true,
+        },
+      }).onOk(async () => {
+        try {
+          await call(`/api/admin/clients/${props.client!.id}`, { method: 'DELETE' });
+          onDialogOK({ type: 'delete', client: props.client });
+        } catch {
+          $q.notify({ type: 'negative', message: 'Unable to delete client' });
+        }
+      });
+    };
+
     return {
       dialogRef,
       onDialogHide,
@@ -111,6 +139,7 @@ export default defineComponent({
       filterUsers,
       filteredUsers,
       isEditing,
+      confirmDelete,
     };
   },
 });
