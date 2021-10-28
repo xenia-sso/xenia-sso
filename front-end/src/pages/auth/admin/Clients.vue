@@ -17,7 +17,7 @@
     </template>
     <template #body-cell-secret="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="grey-9" icon="vpn_key" flat round @click="editClientSecret()"></q-btn>
+        <q-btn color="grey-9" icon="vpn_key" flat round @click="editClientSecret(props.row)"></q-btn>
       </q-td>
     </template>
     <template #body-cell-edit="props">
@@ -41,9 +41,10 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
 
-    const editClientSecret = () => {
+    const editClientSecret = (client: Client) => {
       $q.dialog({
         component: ClientSecret,
+        componentProps: { client },
       }).onOk((password: string) => {
         console.log('onOK', password);
       });

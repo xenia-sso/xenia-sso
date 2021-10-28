@@ -32,7 +32,10 @@
             </q-btn>
           </div>
 
-          <text-copy v-if="newSecret" :text="newSecret" />
+          <template v-if="newSecret">
+            <div class="col col-12">New secret:</div>
+            <text-copy :text="newSecret" class="q-pt-xs" />
+          </template>
         </div>
       </q-form>
     </q-card>
@@ -40,10 +43,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useDialogPluginComponent } from 'quasar';
+import { defineComponent, ref, PropType } from 'vue';
+import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import TextCopy from 'src/components/dialogs/partials/TextCopy.vue';
+import { Client } from '../../models/clients';
+import { call } from '../../ts/api';
 
 export default defineComponent({
   components: { TextCopy },
@@ -52,7 +57,14 @@ export default defineComponent({
     // component will emit through useDialogPluginComponent()
     ...useDialogPluginComponent.emits,
   ],
-  setup() {
+  props: {
+    client: {
+      type: Object as PropType<Client>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const $q = useQuasar();
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
     const persistent = ref(false);
@@ -61,14 +73,19 @@ export default defineComponent({
     const fetchSecret = async () => {
       isFetchingSecret.value = true;
       persistent.value = true;
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 2000);
-      });
-
-      newSecret.value = 'BPSndMgH6VSAqYc3';
-      isFetchingSecret.value = false;
+      try {
+        const { secret } = await call<{ secret: string }>('/api/admin/clients/secret/' + props.client.id, {
+          method: 'PUT',
+        });
+        newSecret.value = secret;
+      } catch {
+        $q.notify({
+          type: 'negative',
+          message: 'Unable to get new secret.',
+        });
+      } finally {
+        isFetchingSecret.value = false;
+      }
     };
 
     const formFields = ref({
