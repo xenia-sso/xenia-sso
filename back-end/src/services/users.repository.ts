@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
+import { Types } from "mongoose";
 import { UserModel } from "src/models/user.model";
 import { comparePasswords, encryptPassword } from "src/utils/bcrypt";
 
@@ -60,6 +61,16 @@ export class UsersRepository {
     }
 
     return model;
+  }
+
+  async isLastAdmin(id: string) {
+    const otherAdminCount = await this.model
+      .find({
+        roles: ["admin"],
+        _id: { $ne: new Types.ObjectId(id) },
+      })
+      .count();
+    return otherAdminCount === 0;
   }
 
   delete(id: string) {
