@@ -1,13 +1,14 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-py-md q-px-lg">
-      <q-form @submit="onDialogOK(formFields)">
-        <div class="row q-col-gutter-xs">
+      <q-form @submit="submit">
+        <div class="row q-col-gutter-sm">
           <div class="col col-12 text-h6 q-mb-md">Change password</div>
 
           <div class="col col-12">
             <q-input
               v-model="formFields.oldPassword"
+              autofocus
               filled
               square
               dense
@@ -40,7 +41,7 @@
               type="password"
               label="Confirm password"
               lazy-rules
-              :rules="[RULES.required, RULES.password]"
+              :rules="[RULES.required, RULES.password, (v) => v === formFields.password || 'Does not match password.']"
             ></q-input>
           </div>
 
@@ -74,7 +75,10 @@ export default defineComponent({
     });
 
     const submit = () => {
-      console.log('submit');
+      if (formFields.value.password !== formFields.value.confirmPassword) {
+        return;
+      }
+      onDialogOK(formFields);
     };
 
     return {
