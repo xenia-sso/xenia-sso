@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@tsed/di";
+import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { UserModel } from "src/models/user.model";
 import { comparePasswords, encryptPassword } from "src/utils/bcrypt";
@@ -35,6 +36,15 @@ export class UsersRepository {
       password: await encryptPassword(obj.password),
     });
     await model.save();
+
+    return model;
+  }
+
+  async update(id: string, obj: { email: string; firstName: string; lastName: string }) {
+    const model = await this.model.findByIdAndUpdate(id, obj, { new: true });
+    if (!model) {
+      throw new NotFound("Not Found");
+    }
 
     return model;
   }
