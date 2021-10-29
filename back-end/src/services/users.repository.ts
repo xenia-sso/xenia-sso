@@ -49,6 +49,19 @@ export class UsersRepository {
     return model;
   }
 
+  async updatePassword(id: string, newPassword: string) {
+    const model = await this.model.findByIdAndUpdate(
+      id,
+      { password: await encryptPassword(newPassword) },
+      { new: true }
+    );
+    if (!model) {
+      throw new NotFound("Not Found");
+    }
+
+    return model;
+  }
+
   delete(id: string) {
     return this.model.findByIdAndDelete(id);
   }

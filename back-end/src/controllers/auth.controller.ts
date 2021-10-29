@@ -1,5 +1,5 @@
 import { Controller, Get, UseAuth, UseBefore, Context, Req, Res, BodyParams, Inject } from "@tsed/common";
-import { ContentType, Email, Post, Required } from "@tsed/schema";
+import { ContentType, Email, MaxLength, MinLength, Post, Put, Required } from "@tsed/schema";
 import { AuthMiddleware } from "src/middlewares/auth.middleware";
 import { RefreshTokenMiddleware } from "src/middlewares/refresh-token.middleware";
 import jwt from "jsonwebtoken";
@@ -13,6 +13,18 @@ class AuthenticateBody {
 
   @Required()
   password: string;
+}
+
+class ChangePasswordBody {
+  @Required()
+  @MinLength(6)
+  @MaxLength(100)
+  oldPassword: string;
+
+  @Required()
+  @MinLength(6)
+  @MaxLength(100)
+  newPassword: string;
 }
 
 @Controller("/auth")
@@ -50,6 +62,16 @@ export class AuthController {
       }),
       user,
     };
+  }
+
+  @UseAuth(AuthMiddleware)
+  @Put("/change-password")
+  async changePassword(@Context() ctx: Context, @BodyParams() body: ChangePasswordBody) {
+    if (!(await this.repository.checkPassword(ctx.get("user").email, body.oldPassword))) {
+      throw new Unauthorized("Unauthorized");
+    }
+    await this.repository.updatePassword(ctx.get("user").id, body.newPassword);
+    return { success: true };
   }
 
   @Post("/refresh")
