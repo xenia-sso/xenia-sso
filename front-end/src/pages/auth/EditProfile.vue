@@ -116,13 +116,24 @@ export default defineComponent({
     const confirmDeleteAccount = () => {
       $q.dialog({
         title: 'Warning',
-        message: 'You are about to delete your account. Please enter your password to confirm.',
+        message:
+          'You are about to delete your account. This action cannot be undone. Please enter your password to confirm.',
         prompt: {
           model: '',
           type: 'password',
+          filled: true,
+          label: 'Password',
         },
-        cancel: true,
         persistent: false,
+        ok: {
+          flat: false,
+          color: 'negative',
+          label: 'confirm',
+        },
+        cancel: {
+          color: 'grey-5',
+          flat: true,
+        },
       }).onOk((password: string) => {
         console.log('onOK', password);
       });
