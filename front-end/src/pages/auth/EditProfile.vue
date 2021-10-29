@@ -42,7 +42,9 @@
           </div>
 
           <div class="col col-12">
-            <q-btn type="submit" color="primary" class="full-width q-mt-sm">Submit</q-btn>
+            <q-btn type="submit" color="primary" class="full-width q-mt-sm" :loading="isSubmitingProfileEdit">
+              Submit
+            </q-btn>
           </div>
         </div>
       </q-form>
@@ -73,20 +75,35 @@ import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import ChangePassword from 'src/components/dialogs/ChangePassword.vue';
+import { useCurrentUser } from '../../composables/current-user';
+import { call, User } from '../../ts/api';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
 
-    const submit = () => {
-      console.log('submit');
-    };
+    const { currentUser } = useCurrentUser();
 
     const profileFormFields = ref({
-      email: '',
-      firstName: '',
-      lastName: '',
+      email: currentUser.value!.email,
+      firstName: currentUser.value!.firstName,
+      lastName: currentUser.value!.lastName,
     });
+
+    const isSubmitingProfileEdit = ref(false);
+    const submit = async () => {
+      isSubmitingProfileEdit.value = true;
+      try {
+        currentUser.value = await call<User>('/api/profile', { method: 'PUT', body: profileFormFields.value });
+      } catch {
+        $q.notify({
+          type: 'negative',
+          message: 'Unable to edit profile.',
+        });
+      } finally {
+        isSubmitingProfileEdit.value = false;
+      }
+    };
 
     const changePassword = () => {
       $q.dialog({
@@ -117,6 +134,7 @@ export default defineComponent({
       submit,
       changePassword,
       confirmDeleteAccount,
+      isSubmitingProfileEdit,
     };
   },
 });
