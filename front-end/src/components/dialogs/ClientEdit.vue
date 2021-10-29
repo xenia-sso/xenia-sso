@@ -29,7 +29,9 @@
               use-input
               use-chips
               input-debounce="0"
-              label="Granted users"
+              label="Granted allUsers"
+              emit-value
+              map-options
               @filter="filterUsers"
             />
           </div>
@@ -44,11 +46,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from 'vue';
+import { defineComponent, ref, computed, PropType, onMounted } from 'vue';
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import { Client } from '../../models/clients';
-import { call } from '../../ts/api';
+import { call, User } from '../../ts/api';
 
 export default defineComponent({
   emits: [
@@ -88,15 +90,33 @@ export default defineComponent({
       }
     };
 
-    const allUsers = ['User 1', 'User 2'];
-    const filteredUsers = ref<string[]>([]);
+    const allUsers = ref<User[]>([]);
+    const filteredUsers = ref<{ label: string; value: string }[]>([]);
+    onMounted(async () => {
+      allUsers.value = await call<User[]>('/api/admin/users');
+      filteredUsers.value = allUsers.value.map((u) => ({
+        value: u.id,
+        label: `${u.firstName} ${u.lastName}`,
+      }));
+    });
+
     const filterUsers = (val: string, update: (fn: () => void) => void) => {
       update(() => {
         if (val === '') {
-          filteredUsers.value = allUsers;
+          filteredUsers.value = allUsers.value.map((u) => ({
+            value: u.id,
+            label: `${u.firstName} ${u.lastName}`,
+          }));
         } else {
           const needle = val.toLowerCase();
-          filteredUsers.value = allUsers.filter((v) => v.toLowerCase().includes(needle));
+          filteredUsers.value = allUsers.value
+            .filter((u) => {
+              return u.firstName.toLowerCase().includes(needle) || u.lastName.toLowerCase().includes(needle);
+            })
+            .map((u) => ({
+              value: u.id,
+              label: `${u.firstName} ${u.lastName}`,
+            }));
         }
       });
     };
@@ -140,6 +160,7 @@ export default defineComponent({
       filteredUsers,
       isEditing,
       confirmDelete,
+      allUsers,
     };
   },
 });
