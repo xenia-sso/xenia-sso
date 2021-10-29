@@ -55,13 +55,19 @@ export default defineComponent({
         component: ClientEdit,
         componentProps: { client },
       }).onOk(async (data: { type: 'edit' | 'create' | 'delete'; client: Client }) => {
-        if (data.type === 'edit') {
-          return;
-        } else if (data.type === 'delete') {
+        if (data.type === 'delete') {
           const clientIndex = clients.value.findIndex((c) => c.id === data.client.id);
           if (clientIndex > -1) {
             clients.value.splice(clientIndex, 1);
           }
+          return;
+        }
+
+        if (data.type === 'edit') {
+          client!.id = data.client.id;
+          client!.name = data.client.name;
+          client!.allUsers = data.client.allUsers;
+          client!.grantedUsers = data.client.grantedUsers.concat();
           return;
         }
 

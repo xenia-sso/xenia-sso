@@ -20,6 +20,11 @@ export class ClientsController {
     return this.repository.create(body);
   }
 
+  @Put("/:id")
+  edit(@PathParams("id") id: string, @BodyParams() body: ClientModel) {
+    return this.repository.update(id, body);
+  }
+
   @Put("/secret/:id")
   resetSecret(@PathParams("id") id: string) {
     return this.repository.resetSecret(id);

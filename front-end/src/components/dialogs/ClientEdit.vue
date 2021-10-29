@@ -78,7 +78,7 @@ export default defineComponent({
       try {
         onDialogOK({
           type: isEditing.value ? 'edit' : 'create',
-          client: await call<Client>('/api/admin/clients', {
+          client: await call<Client>(`/api/admin/clients${isEditing.value ? `/${props.client!.id}` : ''}`, {
             method: isEditing.value ? 'PUT' : 'POST',
             body: formFields.value,
           }),

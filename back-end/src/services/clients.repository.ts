@@ -36,6 +36,15 @@ export class ClientsRepository {
     };
   }
 
+  async update(id: string, client: ClientModel) {
+    const model = await this.model.findByIdAndUpdate(id, client, { new: true });
+    if (!model) {
+      throw new NotFound("Not Found");
+    }
+
+    return model;
+  }
+
   delete(id: string) {
     return this.model.findByIdAndDelete(id);
   }
