@@ -3,15 +3,6 @@
     <div class="row q-col-gutter-sm">
       <div class="col col-12 text-h6">Login</div>
 
-      <div v-if="error" class="col col-12">
-        <q-banner class="bg-negative">
-          <template v-slot:avatar>
-            <q-icon name="cancel" />
-          </template>
-          <span>{{ error }}</span>
-        </q-banner>
-      </div>
-
       <div class="col col-12">
         <q-input
           v-model.trim="formFields.email"
@@ -54,11 +45,12 @@ import { defineComponent, ref } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { CallError, login } from 'src/ts/api';
 import { useCurrentUser } from 'src/composables/current-user';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   setup() {
+    const $q = useQuasar();
     const isLoading = ref(false);
-    const error = ref('');
 
     const formFields = ref({
       email: '',
@@ -67,20 +59,20 @@ export default defineComponent({
 
     const submit = async () => {
       isLoading.value = true;
-      error.value = '';
       try {
         const user = await login(formFields.value.email, formFields.value.password);
         const { currentUser } = useCurrentUser();
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
+          $q.notify({ type: 'negative', message: 'An unexpected error occurred.Try again later.' });
           return;
         }
 
         if (e.status === 401) {
-          error.value = 'Wrong credentials';
+          $q.notify({ type: 'negative', message: 'Wrong credentials' });
         } else {
-          error.value = e.message;
+          $q.notify({ type: 'negative', message: e.message });
         }
       }
       isLoading.value = false;
@@ -90,7 +82,6 @@ export default defineComponent({
       RULES,
       formFields,
       submit,
-      error,
       isLoading,
     };
   },
