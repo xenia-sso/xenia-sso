@@ -24,6 +24,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, roles: [], title: 'My Profile', icon: 'account_circle' },
   },
   {
+    path: '/auth/my-apps',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/auth/MyApps.vue') }],
+    meta: { requiresAuth: true, roles: [], title: 'My Apps', icon: 'format_list_bulleted' },
+  },
+  {
     path: '/auth/admin/clients',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/auth/admin/Clients.vue') }],
