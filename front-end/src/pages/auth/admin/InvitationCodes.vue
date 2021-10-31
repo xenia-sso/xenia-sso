@@ -6,9 +6,9 @@
     </div>
   </div>
   <q-table :columns="columns" :rows="invitationCodes" row-key="code">
-    <template #body-cell-copy="props">
+    <template #body-cell-link="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="primary" icon="content_copy" flat round @click="copyCode(props.row.id)"></q-btn>
+        <q-btn color="primary" icon="link" flat round @click="copyLink(props.row.id)"></q-btn>
       </q-td>
     </template>
     <template #body-cell-delete="props">
@@ -32,14 +32,14 @@ interface InvitationCode {
 export default defineComponent({
   setup() {
     const $q = useQuasar();
-
     const isLoading = ref(false);
 
-    const copyCode = (code: string) => {
+    const copyLink = (code: string) => {
+      const url = `${window.location.origin}/#/register?code=${code}`;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      copy(code);
+      copy(url);
       $q.notify({
-        message: 'Text copied to clipboard',
+        message: 'Link copied to clipboard',
         color: 'positive',
       });
     };
@@ -74,7 +74,7 @@ export default defineComponent({
 
     const columns = [
       { label: 'Code', field: 'id', sortable: true, align: 'left' },
-      { name: 'copy', label: '', sortable: false, align: 'center' },
+      { name: 'link', label: '', sortable: false, align: 'center' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
@@ -89,7 +89,7 @@ export default defineComponent({
       deleteCode,
       createCode,
       isLoading,
-      copyCode,
+      copyLink,
     };
   },
 });
