@@ -81,7 +81,7 @@
           type="password"
           label="Confirm password"
           lazy-rules
-          :rules="[RULES.required, RULES.password]"
+          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || 'Does not match password.']"
         ></q-input>
       </div>
 
@@ -101,9 +101,13 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { useRoute } from 'vue-router';
+import { call, CallError, login, User } from 'src/ts/api';
+import { useQuasar } from 'quasar';
+import { useCurrentUser } from 'src/composables/current-user';
 
 export default defineComponent({
   setup() {
+    const $q = useQuasar();
     const route = useRoute();
     const canEditInvitationCode = ref(true);
 
@@ -114,8 +118,25 @@ export default defineComponent({
       }
     });
 
-    const submit = () => {
-      console.log('submit');
+    const submit = async () => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { confirmPassword, ...payload } = formFields.value;
+        await call<User>('/api/auth/register', {
+          method: 'POST',
+          body: payload,
+        });
+        const user = await login(payload.email, payload.password);
+        const { currentUser } = useCurrentUser();
+        currentUser.value = user;
+      } catch (e) {
+        if (!(e instanceof CallError)) {
+          $q.notify({ type: 'negative', message: 'An unexpected error occurred.Try again later.' });
+          return;
+        }
+
+        $q.notify({ type: 'negative', message: e.message });
+      }
     };
 
     const formFields = ref({

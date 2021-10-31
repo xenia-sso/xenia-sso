@@ -11,6 +11,10 @@ export class InvitationCodesRepository {
     return this.model.find({});
   }
 
+  exists(id: string) {
+    return this.model.exists({ _id: id });
+  }
+
   async create() {
     const invitationCode = await this.model.create({});
     return invitationCode.save();

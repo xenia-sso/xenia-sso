@@ -31,7 +31,7 @@ export class UsersRepository {
     return user;
   }
 
-  async create(obj: UserModel) {
+  async create(obj: Omit<UserModel, "_id" | "roles">) {
     const model = await this.model.create({
       ...obj,
       password: await encryptPassword(obj.password),

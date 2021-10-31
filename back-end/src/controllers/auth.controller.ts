@@ -3,8 +3,9 @@ import { ContentType, Email, MaxLength, MinLength, Post, Put, Required } from "@
 import { AuthMiddleware } from "src/middlewares/auth.middleware";
 import { RefreshTokenMiddleware } from "src/middlewares/refresh-token.middleware";
 import jwt from "jsonwebtoken";
-import { Unauthorized } from "@tsed/exceptions";
+import { Forbidden, Unauthorized } from "@tsed/exceptions";
 import { UsersRepository } from "src/services/users.repository";
+import { InvitationCodesRepository } from "src/services/invitation-codes.repository";
 
 class AuthenticateBody {
   @Required()
@@ -13,6 +14,31 @@ class AuthenticateBody {
 
   @Required()
   password: string;
+}
+
+class RegisterBody {
+  @Required()
+  invitationCode: string;
+
+  @Required()
+  @MaxLength(100)
+  @Email()
+  email: string;
+
+  @Required()
+  @MinLength(6)
+  @MaxLength(100)
+  password: string;
+
+  @Required()
+  @MinLength(2)
+  @MaxLength(100)
+  firstName: string;
+
+  @Required()
+  @MinLength(2)
+  @MaxLength(100)
+  lastName: string;
 }
 
 class ChangePasswordBody {
@@ -30,7 +56,8 @@ class ChangePasswordBody {
 @Controller("/auth")
 @ContentType("application/json")
 export class AuthController {
-  @Inject(UsersRepository) private repository: UsersRepository;
+  @Inject(UsersRepository) private usersRepository: UsersRepository;
+  @Inject(InvitationCodesRepository) private invitationCodesRepository: InvitationCodesRepository;
 
   @Get("/user")
   @UseAuth(AuthMiddleware)
@@ -38,9 +65,22 @@ export class AuthController {
     return ctx.get("user");
   }
 
+  @Post("/register")
+  async register(@BodyParams() body: RegisterBody) {
+    if (!(await this.invitationCodesRepository.exists(body.invitationCode))) {
+      throw new Forbidden("Forbidden");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { invitationCode, ...userPayload } = body;
+    const user = await this.usersRepository.create(userPayload);
+    await this.invitationCodesRepository.delete(body.invitationCode);
+    return user;
+  }
+
   @Post("/login")
   async login(@Res() res: Res, @BodyParams() body: AuthenticateBody) {
-    const user = await this.repository.checkPassword(body.email, body.password);
+    const user = await this.usersRepository.checkPassword(body.email, body.password);
     if (!user) {
       throw new Unauthorized("Unauthorized");
     }
@@ -67,10 +107,10 @@ export class AuthController {
   @UseAuth(AuthMiddleware)
   @Put("/change-password")
   async changePassword(@Context() ctx: Context, @BodyParams() body: ChangePasswordBody) {
-    if (!(await this.repository.checkPassword(ctx.get("user").email, body.oldPassword))) {
+    if (!(await this.usersRepository.checkPassword(ctx.get("user").email, body.oldPassword))) {
       throw new Unauthorized("Unauthorized");
     }
-    await this.repository.updatePassword(ctx.get("user").id, body.newPassword);
+    await this.usersRepository.updatePassword(ctx.get("user").id, body.newPassword);
     return { success: true };
   }
 
