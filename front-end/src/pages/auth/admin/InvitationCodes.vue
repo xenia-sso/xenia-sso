@@ -6,6 +6,11 @@
     </div>
   </div>
   <q-table :columns="columns" :rows="invitationCodes" row-key="code">
+    <template #body-cell-copy="props">
+      <q-td :props="props" class="text-center">
+        <q-btn color="primary" icon="content_copy" flat round @click="copyCode(props.row.id)"></q-btn>
+      </q-td>
+    </template>
     <template #body-cell-delete="props">
       <q-td :props="props" class="text-center">
         <q-btn color="negative" icon="delete" flat round :disable="isLoading" @click="deleteCode(props.row)"></q-btn>
@@ -18,6 +23,7 @@
 import { useQuasar } from 'quasar';
 import { call } from 'src/ts/api';
 import { defineComponent, ref, onMounted } from 'vue';
+import copy from 'copy-to-clipboard';
 
 interface InvitationCode {
   id: string;
@@ -28,6 +34,15 @@ export default defineComponent({
     const $q = useQuasar();
 
     const isLoading = ref(false);
+
+    const copyCode = (code: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      copy(code);
+      $q.notify({
+        message: 'Text copied to clipboard',
+        color: 'positive',
+      });
+    };
 
     const createCode = async () => {
       isLoading.value = true;
@@ -59,6 +74,7 @@ export default defineComponent({
 
     const columns = [
       { label: 'Code', field: 'id', sortable: true, align: 'left' },
+      { name: 'copy', label: '', sortable: false, align: 'center' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
@@ -73,6 +89,7 @@ export default defineComponent({
       deleteCode,
       createCode,
       isLoading,
+      copyCode,
     };
   },
 });
