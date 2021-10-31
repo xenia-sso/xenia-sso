@@ -1,8 +1,7 @@
-import { BodyParams, Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
+import { Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
 import { Forbidden } from "@tsed/exceptions";
-import { ContentType, Delete, Post } from "@tsed/schema";
+import { ContentType, Delete } from "@tsed/schema";
 import { AuthMiddleware } from "src/middlewares/auth.middleware";
-import { UserModel } from "src/models/user.model";
 import { UsersRepository } from "src/services/users.repository";
 
 @Controller("/admin/users")
@@ -14,11 +13,6 @@ export class UsersController {
   @Get("/")
   async getAll() {
     return this.repository.getAll();
-  }
-
-  @Post("/")
-  async create(@BodyParams() body: UserModel) {
-    return this.repository.create(body);
   }
 
   @Delete("/:id")
