@@ -11,6 +11,7 @@
           dense
           label="Invitation code"
           lazy-rules
+          :disable="!canEditInvitationCode"
           :rules="[RULES.required]"
         ></q-input>
       </div>
@@ -97,11 +98,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   setup() {
+    const route = useRoute();
+    const canEditInvitationCode = ref(true);
+
+    onMounted(() => {
+      if (route.query.code) {
+        formFields.value.invitationCode = route.query.code as string;
+        canEditInvitationCode.value = false;
+      }
+    });
+
     const submit = () => {
       console.log('submit');
     };
@@ -119,6 +131,7 @@ export default defineComponent({
       RULES,
       formFields,
       submit,
+      canEditInvitationCode,
     };
   },
 });
