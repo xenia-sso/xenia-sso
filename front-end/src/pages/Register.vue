@@ -84,6 +84,11 @@
         ></q-input>
       </div>
 
+      <div class="col col-12 text-right">
+        <span class="text-grey-7">Already have an account? </span>
+        <router-link to="/login" class="text-primary">Login</router-link>
+      </div>
+
       <div class="col col-12">
         <q-btn type="submit" color="primary" class="full-width q-mt-sm">Continue</q-btn>
       </div>

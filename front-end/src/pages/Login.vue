@@ -37,6 +37,11 @@
         ></q-input>
       </div>
 
+      <div class="col col-12 text-right">
+        <span class="text-grey-7">No account yet? </span>
+        <router-link to="/register" class="text-primary">Register</router-link>
+      </div>
+
       <div class="col col-12 q-mt-sm">
         <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">Continue</q-btn>
       </div>
