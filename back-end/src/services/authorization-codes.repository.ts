@@ -17,4 +17,8 @@ export class AuthorizationCodesRepository {
 
     return model;
   }
+
+  findByIdAndDelete(id: string) {
+    return this.model.findByIdAndDelete(id);
+  }
 }
