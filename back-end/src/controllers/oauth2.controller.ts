@@ -130,18 +130,10 @@ export class Oauth2Controller {
   @UseAuth(ClientMiddleware)
   @Post("/introspect")
   async introspect(@Context() ctx: Context, @QueryParams() query: IntrospectQuery) {
-    const accessToken = await this.accessTokensRepository.getAccessTokenForClient(query.token, ctx.get("client").id);
-    if (!accessToken) {
-      throw new NotFound("Access token not found");
+    const { active } = await this.accessTokensRepository.isAccessTokenActive(query.token, ctx.get("client").id);
+    if (!active) {
+      await this.accessTokensRepository.deleteByToken(query.token);
     }
-    const lastUsed = accessToken.lastUsed;
-    if (DateTime.fromJSDate(lastUsed).diff(DateTime.now(), "days").days < -90) {
-      await this.accessTokensRepository.delete(accessToken.id);
-      return { active: false };
-    }
-
-    accessToken.lastUsed = DateTime.now().toJSDate();
-    await accessToken.save();
-    return { active: true };
+    return { active };
   }
 }
