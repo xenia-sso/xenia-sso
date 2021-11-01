@@ -5,10 +5,10 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>SSO</q-toolbar-title>
         <div>
-          <q-btn outline rounded>
+          <q-btn outline rounded @click="logout()">
             <div class="row items-center no-wrap">
               <q-icon left name="logout" />
-              <div class="text-center" @click="logout()">Logout</div>
+              <div class="text-center">Logout</div>
             </div>
           </q-btn>
         </div>
