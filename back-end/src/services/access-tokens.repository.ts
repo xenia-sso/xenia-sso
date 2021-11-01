@@ -11,4 +11,12 @@ export class AccessTokensRepository {
     const invitationCode = await this.model.create(obj);
     return invitationCode.save();
   }
+
+  getAccessTokenForClient(token: string, clientId: string) {
+    return this.model.findOne({ token, clientId });
+  }
+
+  delete(id: string) {
+    return this.model.findByIdAndDelete(id);
+  }
 }

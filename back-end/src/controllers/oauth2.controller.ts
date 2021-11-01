@@ -48,6 +48,11 @@ class GetAccessTokenQuery {
   code: string;
 }
 
+class IntrospectQuery {
+  @Required()
+  token: string;
+}
+
 @Controller("/oauth2")
 @ContentType("application/json")
 @UseAuth(AuthMiddleware)
@@ -120,5 +125,23 @@ export class Oauth2Controller {
       scope: "openid",
       id_token: generateIdToken(user),
     };
+  }
+
+  @UseAuth(ClientMiddleware)
+  @Post("/introspect")
+  async introspect(@Context() ctx: Context, @QueryParams() query: IntrospectQuery) {
+    const accessToken = await this.accessTokensRepository.getAccessTokenForClient(query.token, ctx.get("client").id);
+    if (!accessToken) {
+      throw new NotFound("Access token not found");
+    }
+    const lastUsed = accessToken.lastUsed;
+    if (DateTime.fromJSDate(lastUsed).diff(DateTime.now(), "days").days < -90) {
+      await this.accessTokensRepository.delete(accessToken.id);
+      return { active: false };
+    }
+
+    accessToken.lastUsed = DateTime.now().toJSDate();
+    await accessToken.save();
+    return { active: true };
   }
 }
