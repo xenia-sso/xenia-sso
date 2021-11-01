@@ -10,15 +10,17 @@ const init = async () => {
   } catch {}
 };
 
-const onCurrentUserChangeCallbacks: ((user: User | undefined) => void)[] = [];
-const onCurrentUserChange = (cb: (user: User | undefined) => void) => {
+const onCurrentUserChangeCallbacks: ((user: User | undefined) => void | Promise<void>)[] = [];
+const onCurrentUserChange = (cb: (user: User | undefined) => void | Promise<void>) => {
   onCurrentUserChangeCallbacks.push(cb);
 };
 
 watch(
   () => currentUser.value,
   () => {
-    onCurrentUserChangeCallbacks.forEach((cb) => cb(currentUser.value));
+    for (const cb of onCurrentUserChangeCallbacks) {
+      void cb(currentUser.value);
+    }
   }
 );
 

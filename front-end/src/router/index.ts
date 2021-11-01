@@ -1,6 +1,6 @@
 import { route } from 'quasar/wrappers';
 import { useCurrentUser } from 'src/composables/current-user';
-import { User } from 'src/ts/api';
+import { call, CallError, User } from 'src/ts/api';
 import {
   createMemoryHistory,
   createRouter,
@@ -39,14 +39,37 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
   });
 
-  onCurrentUserChange((user: User | undefined) => {
+  onCurrentUserChange(async (user: User | undefined) => {
     if (user) {
-      const redirectBase64QueryParam = Router.currentRoute.value.query.redirect as string;
-      if (!redirectBase64QueryParam) {
-        void Router.push('/auth/profile');
-        return;
+      const route = Router.currentRoute.value;
+      if (route.path === '/oauth2/login') {
+        try {
+          const { authorizationCode } = await call<{ authorizationCode: string }>('/api/oauth2/authorize', {
+            method: 'POST',
+            body: {
+              responseType: route.query['response_type'],
+              scope: route.query['scope'],
+              clientId: route.query['client_id'],
+              codeChallenge: route.query['code_challenge'],
+              codeChallengeMethod: route.query['code_challenge_method'],
+            },
+          });
+          window.location.assign(`${route.query['redirect_uri'] as string}?code=${authorizationCode}`);
+        } catch (e) {
+          if (!(e instanceof CallError)) {
+            window.location.assign(`${route.query['redirect_uri'] as string}?error=Unexpected error`);
+            return;
+          }
+          window.location.assign(`${route.query['redirect_uri'] as string}?error=${e.message}`);
+        }
+      } else {
+        const redirectBase64QueryParam = Router.currentRoute.value.query.redirect as string;
+        if (!redirectBase64QueryParam) {
+          void Router.push('/auth/profile');
+          return;
+        }
+        void Router.push(atob(redirectBase64QueryParam));
       }
-      void Router.push(atob(redirectBase64QueryParam));
     } else {
       void Router.push('/login');
     }

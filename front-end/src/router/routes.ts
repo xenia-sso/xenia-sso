@@ -13,6 +13,38 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/Login.vue') }],
   },
   {
+    path: '/oauth2/login',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/Login.vue'),
+        beforeEnter: (to, from, next) => {
+          const requiredQueryParams = [
+            'response_type',
+            'scope',
+            'client_id',
+            'redirect_uri',
+            'code_challenge',
+            'code_challenge_method',
+          ];
+          const missingParams = requiredQueryParams.filter((p) => !to.query[p]);
+          if (missingParams.length > 0) {
+            next('/oauth2/error');
+            return;
+          }
+
+          next();
+        },
+      },
+    ],
+  },
+  {
+    path: '/oauth2/error',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [{ path: '', component: () => import('src/pages/OAuth2Error.vue') }],
+  },
+  {
     path: '/register',
     component: () => import('layouts/AuthLayout.vue'),
     children: [{ path: '', component: () => import('pages/Register.vue') }],
