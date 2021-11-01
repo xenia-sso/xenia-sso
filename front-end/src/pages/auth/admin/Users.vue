@@ -38,6 +38,10 @@ export default defineComponent({
       }).onOk(async () => {
         try {
           await call('/api/admin/users/' + user.id, { method: 'DELETE' });
+          const userIndex = users.value.findIndex((c) => c.id === user.id);
+          if (userIndex > -1) {
+            users.value.splice(userIndex, 1);
+          }
         } catch {
           $q.notify({ type: 'negative', message: 'Unable to delete user' });
         }
