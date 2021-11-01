@@ -1,6 +1,7 @@
 <template>
   <div class="text-h6 q-mb-sm">My Apps</div>
-  <div v-for="client in clients" :key="client.id" class="row items-center q-mb-xs">
+  <div v-if="clients.length === 0" class="text-subtitle1">You do not have access to any app for now.</div>
+  <div v-else v-for="client in clients" :key="client.id" class="row items-center q-mb-xs">
     <div class="text-subtitle1 q-mr-sm">{{ client.name }}</div>
     <div>
       <q-btn round flat color="primary" size="sm" icon="launch" @click="openInNewTab(client.url)" />
