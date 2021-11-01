@@ -1,6 +1,8 @@
 import { BodyParams, Context, Controller, Inject, UseAuth } from "@tsed/common";
-import { Forbidden, Unauthorized } from "@tsed/exceptions";
+import { BadRequest, Forbidden } from "@tsed/exceptions";
 import { ContentType, Delete, Email, Get, MaxLength, MinLength, Put, Required } from "@tsed/schema";
+import { AccessTokensRepository } from "src/services/access-tokens.repository";
+import { AuthorizationCodesRepository } from "src/services/authorization-codes.repository";
 import { ClientsRepository } from "src/services/clients.repository";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { UsersRepository } from "../services/users.repository";
@@ -22,10 +24,8 @@ class EditProfileBody {
   lastName: string;
 }
 
-class DeleteAccountPayload {
+class DeleteAccountBody {
   @Required()
-  @MinLength(6)
-  @MaxLength(100)
   password: string;
 }
 
@@ -33,6 +33,8 @@ class DeleteAccountPayload {
 @ContentType("application/json")
 @UseAuth(AuthMiddleware)
 export class ProfileController {
+  @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
+  @Inject(AuthorizationCodesRepository) private authorizationCodesRepository: AuthorizationCodesRepository;
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
 
@@ -54,16 +56,19 @@ export class ProfileController {
   }
 
   @Delete("/")
-  async delete(@Context() ctx: Context, @BodyParams() body: DeleteAccountPayload) {
+  async delete(@Context() ctx: Context, @BodyParams() body: DeleteAccountBody) {
     const user = ctx.get("user");
     if (!(await this.usersRepository.checkPassword(user.email, body.password))) {
-      throw new Unauthorized("Unauthorized");
+      throw new BadRequest("BadRequest");
     }
 
     if (user.roles.includes("admin") && (await this.usersRepository.isLastAdmin(user.id))) {
       throw new Forbidden("Forbidden");
     }
 
+    await this.accessTokensRepository.deleteByUser(user.id);
+    await this.authorizationCodesRepository.deleteByUser(user.id);
+    await this.clientsRepository.removeUserFromGrantedUsers(user.id);
     return this.usersRepository.delete(user.id);
   }
 }

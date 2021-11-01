@@ -36,4 +36,8 @@ export class AccessTokensRepository {
   deleteByToken(token: string) {
     return this.model.findOneAndDelete({ token });
   }
+
+  deleteByUser(userId: string) {
+    return this.model.deleteMany({ userId });
+  }
 }

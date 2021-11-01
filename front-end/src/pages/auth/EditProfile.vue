@@ -76,7 +76,7 @@ import { useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import ChangePassword from 'src/components/dialogs/ChangePassword.vue';
 import { useCurrentUser } from '../../composables/current-user';
-import { call, User } from '../../ts/api';
+import { call, CallError, User } from '../../ts/api';
 
 export default defineComponent({
   setup() {
@@ -134,8 +134,22 @@ export default defineComponent({
           color: 'grey-5',
           flat: true,
         },
-      }).onOk((password: string) => {
-        console.log('onOK', password);
+      }).onOk(async (password: string) => {
+        try {
+          await call('/api/profile', { method: 'DELETE', body: { password } });
+          currentUser.value = undefined;
+        } catch (e) {
+          if (!(e instanceof CallError)) {
+            $q.notify({ type: 'negative', message: 'An unexpected error occurred. Try again later.' });
+            return;
+          }
+
+          let message = 'Unable to delete account.';
+          if (e.status === 400) {
+            message = 'Wrong credentials';
+          }
+          $q.notify({ type: 'negative', message });
+        }
       });
     };
 

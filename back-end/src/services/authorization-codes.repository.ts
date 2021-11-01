@@ -21,4 +21,8 @@ export class AuthorizationCodesRepository {
   findAndDelete(id: string, clientId: string) {
     return this.model.findOneAndDelete({ _id: id, clientId });
   }
+
+  deleteByUser(userId: string) {
+    return this.model.deleteMany({ userId });
+  }
 }

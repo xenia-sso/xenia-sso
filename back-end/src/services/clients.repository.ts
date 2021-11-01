@@ -4,6 +4,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import { ClientModel } from "../models/client.model";
 import { encryptPassword } from "../utils/bcrypt";
 import { uuid } from "uuidv4";
+import { Types } from "mongoose";
 
 @Injectable()
 export class ClientsRepository {
@@ -51,5 +52,9 @@ export class ClientsRepository {
 
   delete(id: string) {
     return this.model.findByIdAndDelete(id);
+  }
+
+  removeUserFromGrantedUsers(userId: string) {
+    return this.model.updateMany({}, { $pull: { grantedUsers: new Types.ObjectId(userId) } });
   }
 }
