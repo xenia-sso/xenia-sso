@@ -9,7 +9,9 @@ import { AuthorizationCodesRepository } from "src/services/authorization-codes.r
 import { ClientsRepository } from "src/services/clients.repository";
 import { createHash } from "crypto";
 import { UsersRepository } from "src/services/users.repository";
-import { ClientModel } from "src/models/client.model";
+import { AccessTokensRepository } from "src/services/access-tokens.repository";
+import { generate } from "randomstring";
+import { sign } from "jsonwebtoken";
 
 class AuthorizeBody {
   @Required()
@@ -53,6 +55,7 @@ export class Oauth2Controller {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
   @Inject(AuthorizationCodesRepository) private authCodesRepository: AuthorizationCodesRepository;
+  @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
 
   @Post("/authorize")
   async authorize(@Context() ctx: Context, @BodyParams() body: AuthorizeBody) {
@@ -102,8 +105,28 @@ export class Oauth2Controller {
     if (hash !== authCode.codeChallenge) {
       throw new Unauthorized("Code challenge mismatch");
     }
+
+    const token = generate({ length: 128 });
+    await this.accessTokensRepository.create({
+      clientId: client.id,
+      userId: user.id,
+      lastUsed: DateTime.now().toJSDate(),
+      token,
+    });
+
     return {
-      // TODO: return access token
+      token_type: "Bearer",
+      access_token: token,
+      scope: "openid",
+      id_token: sign(
+        {
+          sub: user.id,
+          email: user.email,
+          given_name: user.firstName,
+          family_name: user.lastName,
+        },
+        process.env.ID_TOKEN_JWT_KEY
+      ),
     };
   }
 }

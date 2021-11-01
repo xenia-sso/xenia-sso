@@ -19,7 +19,6 @@ export class AuthorizationCodesRepository {
   }
 
   findAndDelete(id: string, clientId: string) {
-    return this.model.findOne({ _id: id, clientId });
-    // return this.model.findByIdAndDelete(id);
+    return this.model.findOneAndDelete({ _id: id, clientId });
   }
 }
