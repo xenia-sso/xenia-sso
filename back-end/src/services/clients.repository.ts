@@ -14,6 +14,10 @@ export class ClientsRepository {
     return this.model.find({});
   }
 
+  findById(id: string) {
+    return this.model.findById(id);
+  }
+
   async create(obj: ClientModel) {
     const model = await this.model.create(obj);
     model.secret = "";
