@@ -73,7 +73,8 @@ export class Oauth2Controller {
   @UseAuth(ClientMiddleware)
   @Post("/token")
   async getAccessToken(@Context() ctx: Context, @QueryParams() query: GetAccessTokenQuery) {
-    const authCode = await this.authCodesRepository.findByIdAndDelete(query.code);
+    const client = ctx.get("client");
+    const authCode = await this.authCodesRepository.findAndDelete(query.code, client.id);
     if (!authCode) {
       throw new NotFound("Authorization code not found");
     }
@@ -81,7 +82,6 @@ export class Oauth2Controller {
     if (!user) {
       throw new NotFound("User not found");
     }
-    const client = ctx.get("client") as ClientModel;
     if (!client.allUsers && !client.grantedUsers.includes(authCode.userId)) {
       throw new Forbidden("Forbidden");
     }
