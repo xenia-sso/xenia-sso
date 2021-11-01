@@ -14,10 +14,6 @@ export class AccessTokensRepository {
     return invitationCode.save();
   }
 
-  getAccessTokenForClient(token: string, clientId: string) {
-    return this.model.findOne({ token, clientId });
-  }
-
   async isAccessTokenActive(token: string, clientId: string) {
     const accessToken = await this.model.findOne({ token, clientId });
     if (!accessToken) {
@@ -31,6 +27,10 @@ export class AccessTokensRepository {
     accessToken.lastUsed = DateTime.now().toJSDate();
     await accessToken.save();
     return { active: true };
+  }
+
+  getAccessTokenByToken(token: string) {
+    return this.model.findOne({ token });
   }
 
   deleteByToken(token: string) {
