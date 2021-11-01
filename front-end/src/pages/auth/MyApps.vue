@@ -3,7 +3,7 @@
   <div v-for="client in clients" :key="client.id" class="row items-center q-mb-xs">
     <div class="text-subtitle1 q-mr-sm">{{ client.name }}</div>
     <div>
-      <q-btn round flat color="primary" size="sm" icon="launch" />
+      <q-btn round flat color="primary" size="sm" icon="launch" @click="openInNewTab(client.url)" />
     </div>
   </div>
 </template>
@@ -29,8 +29,14 @@ export default defineComponent({
         });
       }
     });
+
+    const openInNewTab = (url: string) => {
+      window.open(url, '_blank')?.focus();
+    };
+
     return {
       clients,
+      openInNewTab,
     };
   },
 });

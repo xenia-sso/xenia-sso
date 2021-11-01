@@ -2,8 +2,8 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-py-md q-px-lg">
       <q-form @submit="submit()">
-        <div class="row q-col-gutter-xs">
-          <div class="col col-12 text-h6 q-mb-md row items-center">
+        <div class="row q-col-gutter-md">
+          <div class="col col-12 text-h6 row items-center">
             <div class="col">{{ isEditing ? 'Edit' : 'Create' }} client</div>
             <div class="col-auto">
               <q-btn v-if="client" flat round color="negative" icon="delete" @click="confirmDelete()" />
@@ -11,10 +11,30 @@
           </div>
 
           <div class="col col-12">
-            <q-input v-model.trim="formFields.name" filled dense square label="Name" :rules="[RULES.required]" />
+            <q-input
+              v-model.trim="formFields.name"
+              filled
+              dense
+              square
+              label="Name"
+              lazy-rules
+              :rules="[RULES.required]"
+            />
           </div>
 
-          <div class="col col-12 q-py-md">
+          <div class="col col-12">
+            <q-input
+              v-model.trim="formFields.url"
+              filled
+              dense
+              square
+              label="URL"
+              lazy-rules
+              :rules="[RULES.required, RULES.url]"
+            />
+          </div>
+
+          <div class="col col-12">
             <q-checkbox v-model="formFields.allUsers" dense label="Grant access to all users" />
           </div>
 
@@ -72,6 +92,7 @@ export default defineComponent({
 
     const formFields = ref({
       name: isEditing.value ? props.client!.name : '',
+      url: isEditing.value ? props.client!.url : '',
       allUsers: isEditing.value ? props.client!.allUsers : false,
       grantedUsers: isEditing.value ? props.client!.grantedUsers.concat() : [],
     });

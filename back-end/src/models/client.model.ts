@@ -22,6 +22,9 @@ export class ClientModel {
   name: string;
 
   @Required()
+  url: string;
+
+  @Required()
   allUsers: boolean;
 
   @Required()
