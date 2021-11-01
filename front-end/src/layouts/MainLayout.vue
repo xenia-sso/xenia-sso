@@ -4,6 +4,14 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>SSO</q-toolbar-title>
+        <div>
+          <q-btn outline rounded>
+            <div class="row items-center no-wrap">
+              <q-icon left name="logout" />
+              <div class="text-center" @click="logout()">Logout</div>
+            </div>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -34,7 +42,7 @@
 <script lang="ts">
 import MenuLink from 'src/components/MenuLink.vue';
 import { defineComponent, ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import routes from 'src/router/routes';
 import { useCurrentUser } from 'src/composables/current-user';
 
@@ -44,35 +52,43 @@ export default defineComponent({
     MenuLink,
   },
   setup() {
+    const router = useRouter();
     const route = useRoute();
     const leftDrawerOpen = ref(false);
     const { currentUser } = useCurrentUser();
 
     const availableRoutes = computed(() => {
-      return routes.filter((route) => {
-        if (route.redirect) {
-          return false;
-        }
-        if (!route.path.startsWith('/auth')) {
-          return false;
-        }
-        if (!route.meta?.requiresAuth) {
-          return true;
-        }
-        if (!currentUser.value) {
-          return false;
-        }
-        if (!route.meta?.roles) {
-          return true;
-        }
-        return (route.meta.roles as string[]).every((r: string) => currentUser.value!.roles.includes(r));
-      });
+      return routes
+        .filter((route) => {
+          if (route.redirect) {
+            return false;
+          }
+          if (!route.path.startsWith('/auth')) {
+            return true;
+          }
+          if (!route.meta?.requiresAuth) {
+            return true;
+          }
+          if (!currentUser.value) {
+            return false;
+          }
+          if (!route.meta?.roles) {
+            return true;
+          }
+          return (route.meta.roles as string[]).every((r: string) => currentUser.value!.roles.includes(r));
+        })
+        .filter((route) => route.meta?.title && route.meta?.icon);
     });
+
+    const logout = () => {
+      void router.push('/auth/logout');
+    };
 
     return {
       availableRoutes,
       leftDrawerOpen,
       route,
+      logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

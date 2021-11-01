@@ -91,7 +91,6 @@ const routes: RouteRecordRaw[] = [
         currentUser.value = undefined;
       }
     },
-    meta: { title: 'Logout', icon: 'logout' },
   },
 
   // Always leave this as last one,
