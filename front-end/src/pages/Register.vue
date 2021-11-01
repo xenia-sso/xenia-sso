@@ -131,7 +131,7 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: 'An unexpected error occurred.Try again later.' });
+          $q.notify({ type: 'negative', message: 'An unexpected error occurred. Try again later.' });
           return;
         }
 
