@@ -11,7 +11,7 @@ import { createHash } from "crypto";
 import { UsersRepository } from "src/services/users.repository";
 import { AccessTokensRepository } from "src/services/access-tokens.repository";
 import { generate } from "randomstring";
-import { sign } from "jsonwebtoken";
+import { generateIdToken } from "src/utils/openid";
 
 class AuthorizeBody {
   @Required()
@@ -118,15 +118,7 @@ export class Oauth2Controller {
       token_type: "Bearer",
       access_token: token,
       scope: "openid",
-      id_token: sign(
-        {
-          sub: user.id,
-          email: user.email,
-          given_name: user.firstName,
-          family_name: user.lastName,
-        },
-        process.env.ID_TOKEN_JWT_KEY
-      ),
+      id_token: generateIdToken(user),
     };
   }
 }
