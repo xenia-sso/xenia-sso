@@ -56,8 +56,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useDialogPluginComponent } from 'quasar';
+import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
+import { call } from 'src/ts/api';
 
 export default defineComponent({
   emits: [
@@ -66,6 +67,7 @@ export default defineComponent({
     ...useDialogPluginComponent.emits,
   ],
   setup() {
+    const $q = useQuasar();
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
     const formFields = ref({
@@ -74,11 +76,26 @@ export default defineComponent({
       confirmPassword: '',
     });
 
-    const submit = () => {
-      if (formFields.value.password !== formFields.value.confirmPassword) {
-        return;
+    const submit = async () => {
+      try {
+        await call('/api/auth/change-password', {
+          method: 'PUT',
+          body: {
+            oldPassword: formFields.value.oldPassword,
+            newPassword: formFields.value.password,
+          },
+        });
+        $q.notify({
+          type: 'positive',
+          message: 'Password has been changed.',
+        });
+        onDialogOK(formFields);
+      } catch {
+        $q.notify({
+          type: 'negative',
+          message: 'Unable to change password.',
+        });
       }
-      onDialogOK(formFields);
     };
 
     return {
