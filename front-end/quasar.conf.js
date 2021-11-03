@@ -51,6 +51,7 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
+      distDir: '../back-end/dist/public',
       // transpile: false,
       // publicPath: '/',
 

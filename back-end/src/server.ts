@@ -1,5 +1,5 @@
 import { Configuration, Inject } from "@tsed/di";
-import { PlatformApplication } from "@tsed/common";
+import { PlatformApplication, PlatformStaticsSettings } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import compress from "compression";
 import cookieParser from "cookie-parser";
@@ -7,6 +7,16 @@ import methodOverride from "method-override";
 import express from "express";
 import "@tsed/ajv";
 import { config, rootDir } from "./config";
+
+const statics: PlatformStaticsSettings = {};
+if (process.env.NODE_ENV === "production") {
+  statics["/"] = [
+    {
+      root: `${rootDir}/public`,
+      hook: "$beforeRoutesInit",
+    },
+  ];
+}
 
 @Configuration({
   ...config,
@@ -24,6 +34,7 @@ import { config, rootDir } from "./config";
       connectionOptions: {},
     },
   ],
+  statics,
 })
 export class Server {
   @Inject()
