@@ -1,5 +1,5 @@
 import { sign } from "jsonwebtoken";
-import { UserModel } from "src/models/user.model";
+import { UserModel } from "../models/user.model";
 
 export const generateIdToken = (user: UserModel & { id?: string }) => {
   return sign(

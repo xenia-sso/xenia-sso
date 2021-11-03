@@ -1,10 +1,10 @@
 import { Context, Controller, Get, Inject, QueryParams, UseAuth } from "@tsed/common";
 import { InternalServerError, NotFound, Unauthorized } from "@tsed/exceptions";
 import { ContentType, Required } from "@tsed/schema";
-import { ClientMiddleware } from "src/middlewares/client.middleware";
-import { AccessTokensRepository } from "src/services/access-tokens.repository";
-import { UsersRepository } from "src/services/users.repository";
-import { generateIdToken } from "src/utils/openid";
+import { ClientMiddleware } from "../middlewares/client.middleware";
+import { AccessTokensRepository } from "../services/access-tokens.repository";
+import { UsersRepository } from "../services/users.repository";
+import { generateIdToken } from "../utils/openid";
 
 class UserinfoQuery {
   @Required()

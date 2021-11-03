@@ -1,11 +1,11 @@
 import { Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
 import { Forbidden, NotFound } from "@tsed/exceptions";
 import { ContentType, Delete } from "@tsed/schema";
-import { AuthMiddleware } from "src/middlewares/auth.middleware";
-import { AccessTokensRepository } from "src/services/access-tokens.repository";
-import { AuthorizationCodesRepository } from "src/services/authorization-codes.repository";
-import { ClientsRepository } from "src/services/clients.repository";
-import { UsersRepository } from "src/services/users.repository";
+import { AuthMiddleware } from "../../middlewares/auth.middleware";
+import { AccessTokensRepository } from "../../services/access-tokens.repository";
+import { AuthorizationCodesRepository } from "../../services/authorization-codes.repository";
+import { ClientsRepository } from "../../services/clients.repository";
+import { UsersRepository } from "../../services/users.repository";
 
 @Controller("/admin/users")
 @ContentType("application/json")

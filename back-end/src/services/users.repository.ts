@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { Types } from "mongoose";
-import { UserModel } from "src/models/user.model";
-import { comparePasswords, encryptPassword } from "src/utils/bcrypt";
+import { UserModel } from "../models/user.model";
+import { comparePasswords, encryptPassword } from "../utils/bcrypt";
 
 @Injectable()
 export class UsersRepository {

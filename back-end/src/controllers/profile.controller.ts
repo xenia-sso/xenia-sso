@@ -1,9 +1,9 @@
 import { BodyParams, Context, Controller, Inject, UseAuth } from "@tsed/common";
 import { BadRequest, Forbidden } from "@tsed/exceptions";
 import { ContentType, Delete, Email, Get, MaxLength, MinLength, Put, Required } from "@tsed/schema";
-import { AccessTokensRepository } from "src/services/access-tokens.repository";
-import { AuthorizationCodesRepository } from "src/services/authorization-codes.repository";
-import { ClientsRepository } from "src/services/clients.repository";
+import { AccessTokensRepository } from "../services/access-tokens.repository";
+import { AuthorizationCodesRepository } from "../services/authorization-codes.repository";
+import { ClientsRepository } from "../services/clients.repository";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { UsersRepository } from "../services/users.repository";
 

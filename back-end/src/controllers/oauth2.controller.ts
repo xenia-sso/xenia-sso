@@ -3,15 +3,15 @@ import { Forbidden, InternalServerError, NotFound, Unauthorized } from "@tsed/ex
 import { ObjectID } from "@tsed/mongoose";
 import { ContentType, Enum, MaxLength, MinLength, Required } from "@tsed/schema";
 import { DateTime } from "luxon";
-import { AuthMiddleware } from "src/middlewares/auth.middleware";
-import { ClientMiddleware } from "src/middlewares/client.middleware";
-import { AuthorizationCodesRepository } from "src/services/authorization-codes.repository";
-import { ClientsRepository } from "src/services/clients.repository";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { ClientMiddleware } from "../middlewares/client.middleware";
+import { AuthorizationCodesRepository } from "../services/authorization-codes.repository";
+import { ClientsRepository } from "../services/clients.repository";
 import { createHash } from "crypto";
-import { UsersRepository } from "src/services/users.repository";
-import { AccessTokensRepository } from "src/services/access-tokens.repository";
+import { UsersRepository } from "../services/users.repository";
+import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generate } from "randomstring";
-import { generateIdToken } from "src/utils/openid";
+import { generateIdToken } from "../utils/openid";
 
 class AuthorizeBody {
   @Required()

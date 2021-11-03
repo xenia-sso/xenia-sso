@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@tsed/di";
 import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { DateTime } from "luxon";
-import { AccessTokenModel } from "src/models/access-token.model";
+import { AccessTokenModel } from "../models/access-token.model";
 
 @Injectable()
 export class AccessTokensRepository {

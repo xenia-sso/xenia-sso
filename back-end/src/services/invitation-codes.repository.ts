@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
-import { InvitationCodeModel } from "src/models/invitation-code.model";
+import { InvitationCodeModel } from "../models/invitation-code.model";
 
 @Injectable()
 export class InvitationCodesRepository {

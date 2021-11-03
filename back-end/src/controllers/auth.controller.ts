@@ -1,11 +1,11 @@
 import { Controller, Get, UseAuth, UseBefore, Context, Req, Res, BodyParams, Inject } from "@tsed/common";
 import { ContentType, Email, MaxLength, MinLength, Post, Put, Required } from "@tsed/schema";
-import { AuthMiddleware } from "src/middlewares/auth.middleware";
-import { RefreshTokenMiddleware } from "src/middlewares/refresh-token.middleware";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { RefreshTokenMiddleware } from "../middlewares/refresh-token.middleware";
 import jwt from "jsonwebtoken";
 import { Forbidden, Unauthorized } from "@tsed/exceptions";
-import { UsersRepository } from "src/services/users.repository";
-import { InvitationCodesRepository } from "src/services/invitation-codes.repository";
+import { UsersRepository } from "../services/users.repository";
+import { InvitationCodesRepository } from "../services/invitation-codes.repository";
 
 class AuthenticateBody {
   @Required()

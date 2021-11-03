@@ -1,7 +1,7 @@
 import { Middleware, Req, Res, Inject, Context } from "@tsed/common";
 import { Unauthorized } from "@tsed/exceptions";
-import { ClientsRepository } from "src/services/clients.repository";
-import { comparePasswords } from "src/utils/bcrypt";
+import { ClientsRepository } from "../services/clients.repository";
+import { comparePasswords } from "../utils/bcrypt";
 
 @Middleware()
 export class ClientMiddleware {

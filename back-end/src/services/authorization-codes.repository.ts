@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
-import { AuthorizationCodeModel } from "src/models/authorization-code.model";
+import { AuthorizationCodeModel } from "../models/authorization-code.model";
 import { DateTime } from "luxon";
 
 @Injectable()

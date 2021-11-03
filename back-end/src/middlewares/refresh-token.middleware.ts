@@ -1,7 +1,7 @@
 import { Middleware, Req, Context, Inject } from "@tsed/common";
 import { Unauthorized } from "@tsed/exceptions";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { UsersRepository } from "src/services/users.repository";
+import { UsersRepository } from "../services/users.repository";
 
 @Middleware()
 export class RefreshTokenMiddleware {
