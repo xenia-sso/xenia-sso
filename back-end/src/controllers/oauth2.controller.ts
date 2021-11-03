@@ -55,13 +55,13 @@ class IntrospectQuery {
 
 @Controller("/oauth2")
 @ContentType("application/json")
-@UseAuth(AuthMiddleware)
 export class Oauth2Controller {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
   @Inject(AuthorizationCodesRepository) private authCodesRepository: AuthorizationCodesRepository;
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
 
+  @UseAuth(AuthMiddleware)
   @Post("/authorize")
   async authorize(@Context() ctx: Context, @BodyParams() body: AuthorizeBody) {
     const user = ctx.get("user");
