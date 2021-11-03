@@ -44,17 +44,22 @@ export default route(function (/* { store, ssrContext } */) {
       const route = Router.currentRoute.value;
       if (route.path === '/oauth2/login') {
         try {
+          const codeChallenge = route.query['code_challenge'] as string;
           const { authorizationCode } = await call<{ authorizationCode: string }>('/api/oauth2/authorize', {
             method: 'POST',
             body: {
               responseType: route.query['response_type'],
               scope: route.query['scope'],
               clientId: route.query['client_id'],
-              codeChallenge: route.query['code_challenge'],
+              codeChallenge,
               codeChallengeMethod: route.query['code_challenge_method'],
             },
           });
-          window.location.assign(`${route.query['redirect_uri'] as string}?code=${authorizationCode}`);
+          window.location.assign(
+            `${route.query['redirect_uri'] as string}?code=${authorizationCode}&code_challenge=${encodeURIComponent(
+              codeChallenge
+            )}`
+          );
         } catch (e) {
           if (!(e instanceof CallError)) {
             window.location.assign(`${route.query['redirect_uri'] as string}?error=Unexpected error`);
