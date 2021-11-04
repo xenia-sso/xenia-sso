@@ -113,6 +113,8 @@ export const login = async (email: string, password: string) => {
   return data.user;
 };
 
-export const logout = () => {
-  return call('/api/auth/logout', { method: 'POST' });
+export const logout = async () => {
+  const data = await call('/api/auth/logout', { method: 'POST' });
+  jwt = '';
+  return data;
 };
