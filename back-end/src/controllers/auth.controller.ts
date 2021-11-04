@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { Forbidden, Unauthorized } from "@tsed/exceptions";
 import { UsersRepository } from "../services/users.repository";
 import { InvitationCodesRepository } from "../services/invitation-codes.repository";
+import { DateTime } from "luxon";
 
 class AuthenticateBody {
   @Required()
@@ -93,6 +94,7 @@ export class AuthController {
       {
         httpOnly: true,
         sameSite: true,
+        expires: DateTime.now().plus({ days: 90 }).toJSDate(),
       }
     );
 
