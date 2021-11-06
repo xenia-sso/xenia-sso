@@ -53,6 +53,11 @@ class IntrospectQuery {
   token: string;
 }
 
+class RevokeTokenQuery {
+  @Required()
+  token: string;
+}
+
 @Controller("/oauth2")
 @ContentType("application/json")
 export class Oauth2Controller {
@@ -132,8 +137,15 @@ export class Oauth2Controller {
   async introspect(@Context() ctx: Context, @QueryParams() query: IntrospectQuery) {
     const { active } = await this.accessTokensRepository.isAccessTokenActive(query.token, ctx.get("client").id);
     if (!active) {
-      await this.accessTokensRepository.deleteByToken(query.token);
+      await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
     }
     return { active };
+  }
+
+  @UseAuth(ClientMiddleware)
+  @Post("/revoke-token")
+  async revokeToken(@Context() ctx: Context, @QueryParams() query: RevokeTokenQuery) {
+    await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
+    return { success: true };
   }
 }

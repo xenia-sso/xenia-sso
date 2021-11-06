@@ -1,7 +1,8 @@
 import { Context, Controller, Get, Inject, QueryParams, UseAuth } from "@tsed/common";
-import { InternalServerError, NotFound, Unauthorized } from "@tsed/exceptions";
+import { InternalServerError, NotFound, Unauthorized, Forbidden } from "@tsed/exceptions";
 import { ContentType, Required } from "@tsed/schema";
 import { ClientMiddleware } from "../middlewares/client.middleware";
+import { ClientModel } from "../models/client.model";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { UsersRepository } from "../services/users.repository";
 import { generateIdToken } from "../utils/openid";
@@ -22,7 +23,7 @@ export class UserinfoController {
   async userinfo(@Context() ctx: Context, @QueryParams() params: UserinfoQuery) {
     const { active } = await this.accessTokensRepository.isAccessTokenActive(params.token, ctx.get("client").id);
     if (!active) {
-      await this.accessTokensRepository.deleteByToken(params.token);
+      await this.accessTokensRepository.deleteByToken(params.token, ctx.get("client").id);
       throw new Unauthorized("Access token expired");
     }
 
@@ -30,6 +31,12 @@ export class UserinfoController {
     if (!token) {
       throw new InternalServerError("An unexpected error occurred");
     }
+
+    const client = ctx.get("client") as ClientModel;
+    if (!client.allUsers && !client.grantedUsers.includes(token.userId)) {
+      throw new Forbidden("Forbidden");
+    }
+
     const user = await this.usersRepository.findById(token.userId.toString());
     if (!user) {
       throw new NotFound("User not found");

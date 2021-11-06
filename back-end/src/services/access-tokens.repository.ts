@@ -33,8 +33,8 @@ export class AccessTokensRepository {
     return this.model.findOne({ token });
   }
 
-  deleteByToken(token: string) {
-    return this.model.findOneAndDelete({ token });
+  deleteByToken(token: string, clientId: string) {
+    return this.model.findOneAndDelete({ token, clientId });
   }
 
   deleteByUser(userId: string) {
