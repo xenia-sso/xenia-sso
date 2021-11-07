@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { CallError, login } from 'src/ts/api';
 import { useCurrentUser } from 'src/composables/current-user';
@@ -51,6 +51,21 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const isLoading = ref(false);
+    const { isSilentlyLogin } = useCurrentUser();
+
+    watch(
+      () => isSilentlyLogin.value,
+      (val: boolean) => {
+        if (!val) {
+          $q.loading.hide();
+        }
+      }
+    );
+    onMounted(() => {
+      if (isSilentlyLogin.value) {
+        $q.loading.show();
+      }
+    });
 
     const formFields = ref({
       email: '',

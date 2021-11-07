@@ -12,9 +12,9 @@ export default defineComponent({
     const $q = useQuasar();
     $q.dark.set(true);
 
-    const { init } = useCurrentUser();
+    const { silentLogin } = useCurrentUser();
     onMounted(() => {
-      void init();
+      void silentLogin();
     });
   },
 });
