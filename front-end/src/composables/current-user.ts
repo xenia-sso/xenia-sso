@@ -2,16 +2,16 @@ import { ref, watch } from 'vue';
 import { call, User } from 'src/ts/api';
 
 const currentUser = ref<User>();
-const isSilentlyLogin = ref(false);
+const isSilentlyLoggingIn = ref(false);
 
 const silentLogin = async () => {
-  isSilentlyLogin.value = true;
+  isSilentlyLoggingIn.value = true;
   try {
     const data = await call<User>('/api/auth/user');
     currentUser.value = data;
   } catch {
   } finally {
-    isSilentlyLogin.value = false;
+    isSilentlyLoggingIn.value = false;
   }
 };
 
@@ -32,6 +32,6 @@ watch(
 export const useCurrentUser = () => ({
   silentLogin,
   currentUser,
-  isSilentlyLogin,
+  isSilentlyLogin: isSilentlyLoggingIn,
   onCurrentUserChange,
 });
