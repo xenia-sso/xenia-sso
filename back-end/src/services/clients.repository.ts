@@ -57,4 +57,11 @@ export class ClientsRepository {
   removeUserFromGrantedUsers(userId: string) {
     return this.model.updateMany({}, { $pull: { grantedUsers: new Types.ObjectId(userId) } });
   }
+
+  isUserGrantedToClient(userId: string, client: ClientModel) {
+    if (client.allUsers) {
+      return true;
+    }
+    return client.grantedUsers.includes(userId);
+  }
 }

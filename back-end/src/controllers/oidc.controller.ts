@@ -2,8 +2,8 @@ import { Context, Controller, Get, Inject, QueryParams, UseAuth } from "@tsed/co
 import { InternalServerError, NotFound, Unauthorized, Forbidden } from "@tsed/exceptions";
 import { ContentType, Required } from "@tsed/schema";
 import { ClientMiddleware } from "../middlewares/client.middleware";
-import { ClientModel } from "../models/client.model";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
+import { ClientsRepository } from "../services/clients.repository";
 import { UsersRepository } from "../services/users.repository";
 import { generateIdToken } from "../utils/openid";
 
@@ -17,6 +17,7 @@ class UserinfoQuery {
 export class UserinfoController {
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
   @Inject(UsersRepository) private usersRepository: UsersRepository;
+  @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
 
   @UseAuth(ClientMiddleware)
   @Get("/userinfo")
@@ -32,8 +33,8 @@ export class UserinfoController {
       throw new InternalServerError("An unexpected error occurred");
     }
 
-    const client = ctx.get("client") as ClientModel;
-    if (!client.allUsers && !client.grantedUsers.includes(token.userId)) {
+    const client = ctx.get("client");
+    if (!this.clientsRepository.isUserGrantedToClient(token.userId.toString(), client)) {
       throw new Forbidden("Forbidden");
     }
 

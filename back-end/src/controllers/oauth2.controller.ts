@@ -74,7 +74,7 @@ export class Oauth2Controller {
     if (!client) {
       throw new NotFound("Client not found");
     }
-    if (!client.allUsers && !client.grantedUsers.includes(user.id)) {
+    if (!this.clientsRepository.isUserGrantedToClient(user.id, client)) {
       throw new Forbidden("Forbidden");
     }
 
@@ -95,7 +95,7 @@ export class Oauth2Controller {
     if (!user) {
       throw new NotFound("User not found");
     }
-    if (!client.allUsers && !client.grantedUsers.includes(authCode.userId)) {
+    if (!this.clientsRepository.isUserGrantedToClient(authCode.userId.toString(), client)) {
       throw new Forbidden("Forbidden");
     }
     if (DateTime.now() > DateTime.fromJSDate(authCode.expiration)) {
@@ -135,9 +135,14 @@ export class Oauth2Controller {
   @UseAuth(ClientMiddleware)
   @Post("/introspect")
   async introspect(@Context() ctx: Context, @QueryParams() query: IntrospectQuery) {
-    const { active } = await this.accessTokensRepository.isAccessTokenActive(query.token, ctx.get("client").id);
+    const { active, userId } = await this.accessTokensRepository.isAccessTokenActive(query.token, ctx.get("client").id);
     if (!active) {
       await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
+    }
+
+    const client = ctx.get("client");
+    if (!this.clientsRepository.isUserGrantedToClient(userId.toString(), client)) {
+      throw new Forbidden("Forbidden");
     }
     return { active };
   }

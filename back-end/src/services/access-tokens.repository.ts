@@ -21,12 +21,12 @@ export class AccessTokensRepository {
     }
     const lastUsed = accessToken.lastUsed;
     if (DateTime.fromJSDate(lastUsed).diff(DateTime.now(), "days").days < -90) {
-      return { active: false };
+      return { active: false, userId: accessToken.userId };
     }
 
     accessToken.lastUsed = DateTime.now().toJSDate();
     await accessToken.save();
-    return { active: true };
+    return { active: true, userId: accessToken.userId };
   }
 
   getAccessTokenByToken(token: string) {
