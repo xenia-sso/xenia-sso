@@ -32,6 +32,6 @@ watch(
 export const useCurrentUser = () => ({
   silentLogin,
   currentUser,
-  isSilentlyLogin: isSilentlyLoggingIn,
+  isSilentlyLoggingIn,
   onCurrentUserChange,
 });

@@ -51,10 +51,10 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const isLoading = ref(false);
-    const { isSilentlyLogin } = useCurrentUser();
+    const { isSilentlyLoggingIn } = useCurrentUser();
 
     watch(
-      () => isSilentlyLogin.value,
+      () => isSilentlyLoggingIn.value,
       (val: boolean) => {
         if (!val) {
           $q.loading.hide();
@@ -62,7 +62,7 @@ export default defineComponent({
       }
     );
     onMounted(() => {
-      if (isSilentlyLogin.value) {
+      if (isSilentlyLoggingIn.value) {
         $q.loading.show();
       }
     });
