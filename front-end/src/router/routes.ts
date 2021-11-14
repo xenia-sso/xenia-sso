@@ -1,6 +1,24 @@
 import { useCurrentUser } from 'src/composables/current-user';
 import { logout } from 'src/ts/api';
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
+
+const oauth2Guard = (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  const requiredQueryParams = [
+    'response_type',
+    'scope',
+    'client_id',
+    'redirect_uri',
+    'code_challenge',
+    'code_challenge_method',
+  ];
+  const missingParams = requiredQueryParams.filter((p) => !to.query[p]);
+  if (missingParams.length > 0) {
+    next('/oauth2/error');
+    return;
+  }
+
+  next();
+};
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,23 +37,20 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('pages/Login.vue'),
-        beforeEnter: (to, from, next) => {
-          const requiredQueryParams = [
-            'response_type',
-            'scope',
-            'client_id',
-            'redirect_uri',
-            'code_challenge',
-            'code_challenge_method',
-          ];
-          const missingParams = requiredQueryParams.filter((p) => !to.query[p]);
-          if (missingParams.length > 0) {
-            next('/oauth2/error');
-            return;
-          }
-
-          next();
-        },
+        beforeEnter: oauth2Guard,
+        meta: { isOAuth2Page: true },
+      },
+    ],
+  },
+  {
+    path: '/oauth2/register',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/Register.vue'),
+        beforeEnter: oauth2Guard,
+        meta: { isOAuth2Page: true },
       },
     ],
   },

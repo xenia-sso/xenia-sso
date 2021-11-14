@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { useRoute } from 'vue-router';
 import { call, CallError, login, User } from 'src/ts/api';
@@ -139,6 +139,16 @@ export default defineComponent({
       }
     };
 
+    const loginLink = computed(() => {
+      if (!route.meta?.isOAuth2Page) {
+        return '/login';
+      }
+      return {
+        path: '/oauth2/login',
+        query: route.query,
+      };
+    });
+
     const formFields = ref({
       invitationCode: '',
       email: '',
@@ -151,6 +161,7 @@ export default defineComponent({
     return {
       RULES,
       formFields,
+      loginLink,
       submit,
       canEditInvitationCode,
     };

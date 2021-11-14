@@ -42,7 +42,7 @@ export default route(function (/* { store, ssrContext } */) {
   onCurrentUserChange(async (user: User | undefined) => {
     if (user) {
       const route = Router.currentRoute.value;
-      if (route.path === '/oauth2/login') {
+      if (['/oauth2/login', '/oauth2/register'].includes(route.path)) {
         try {
           const codeChallenge = route.query['code_challenge'] as string;
           const { authorizationCode } = await call<{ authorizationCode: string }>('/api/oauth2/authorize', {

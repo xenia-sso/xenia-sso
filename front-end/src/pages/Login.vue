@@ -30,7 +30,7 @@
 
       <div class="col col-12 text-right">
         <span class="text-grey-7">No account yet? </span>
-        <router-link to="/register" class="text-primary">Register</router-link>
+        <router-link :to="registerLink" class="text-primary">Register</router-link>
       </div>
 
       <div class="col col-12 q-mt-sm">
@@ -41,15 +41,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from 'vue';
+import { defineComponent, ref, watch, onMounted, computed } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { CallError, login } from 'src/ts/api';
 import { useCurrentUser } from 'src/composables/current-user';
 import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
+    const route = useRoute();
     const isLoading = ref(false);
     const { isSilentlyLoggingIn } = useCurrentUser();
 
@@ -93,8 +95,19 @@ export default defineComponent({
       isLoading.value = false;
     };
 
+    const registerLink = computed(() => {
+      if (!route.meta?.isOAuth2Page) {
+        return '/register';
+      }
+      return {
+        path: '/oauth2/register',
+        query: route.query,
+      };
+    });
+
     return {
       RULES,
+      registerLink,
       formFields,
       submit,
       isLoading,
