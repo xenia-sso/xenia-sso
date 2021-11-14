@@ -63,6 +63,22 @@ export class UsersRepository {
     return model;
   }
 
+  async setAdmin(id: string, value: boolean) {
+    const user = await this.model.findById(id);
+    if (!user) {
+      throw new NotFound("Not Found");
+    }
+
+    if (value && user.roles.includes("admin")) {
+      return user;
+    } else if (!value && !user.roles.includes("admin")) {
+      return user;
+    }
+
+    const mongoKeyword = value ? "$push" : "$pull";
+    return this.model.findByIdAndUpdate(id, { [mongoKeyword]: { roles: "admin" } }, { new: true });
+  }
+
   async isLastAdmin(id: string) {
     const otherAdminCount = await this.model
       .find({

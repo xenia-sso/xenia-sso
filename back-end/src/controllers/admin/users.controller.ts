@@ -1,11 +1,16 @@
-import { Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
+import { BodyParams, Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
 import { Forbidden, NotFound } from "@tsed/exceptions";
-import { ContentType, Delete } from "@tsed/schema";
+import { ContentType, Delete, Put, Required } from "@tsed/schema";
 import { AuthMiddleware } from "../../middlewares/auth.middleware";
 import { AccessTokensRepository } from "../../services/access-tokens.repository";
 import { AuthorizationCodesRepository } from "../../services/authorization-codes.repository";
 import { ClientsRepository } from "../../services/clients.repository";
 import { UsersRepository } from "../../services/users.repository";
+
+class SetAdminBody {
+  @Required()
+  value: boolean;
+}
 
 @Controller("/admin/users")
 @ContentType("application/json")
@@ -19,6 +24,14 @@ export class UsersController {
   @Get("/")
   async getAll() {
     return this.usersRepository.getAll();
+  }
+
+  @Put("/set-admin/:id")
+  async setAdmin(@Context() ctx: Context, @PathParams("id") id: string, @BodyParams() body: SetAdminBody) {
+    if (ctx.get("user").id === id) {
+      throw new Forbidden("Forbidden");
+    }
+    return this.usersRepository.setAdmin(id, body.value);
   }
 
   @Delete("/:id")
