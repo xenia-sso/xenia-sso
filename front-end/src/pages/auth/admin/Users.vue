@@ -3,6 +3,17 @@
     <template #body-cell-fullname="props">
       <q-td :props="props" class="text-center">{{ props.row.firstName }}&nbsp;{{ props.row.lastName }}</q-td>
     </template>
+    <template #body-cell-isAdmin="props">
+      <q-td>
+        <q-toggle
+          :model-value="props.row.roles.includes('admin')"
+          checked-icon="check"
+          color="warning"
+          unchecked-icon="clear"
+          @click="toggleAdmin(props.row, !props.row.roles.includes('admin'))"
+        />
+      </q-td>
+    </template>
     <template #body-cell-delete="props">
       <q-td :props="props" class="text-center">
         <q-btn color="negative" icon="delete" flat round @click="confirmDeleteUser(props.row)"></q-btn>
@@ -48,9 +59,60 @@ export default defineComponent({
       });
     };
 
+    const toggleAdmin = async (user: User, value: boolean) => {
+      if (value) {
+        const proceed = await new Promise((resolve) => {
+          $q.dialog({
+            title: 'Warning',
+            message: `Do you really want to grant user ${user.firstName} ${user.lastName} admin role?`,
+            persistent: false,
+            ok: {
+              flat: false,
+              color: 'warning',
+              label: 'confirm',
+            },
+            cancel: {
+              color: 'grey-5',
+              flat: true,
+            },
+          })
+            .onOk(() => {
+              resolve(true);
+            })
+            .onCancel(() => {
+              resolve(false);
+            })
+            .onDismiss(() => {
+              resolve(false);
+            });
+        });
+
+        if (!proceed) {
+          return;
+        }
+      }
+
+      try {
+        await call('/api/admin/users/set-admin/' + user.id, {
+          method: 'PUT',
+          body: {
+            value,
+          },
+        });
+        if (value) {
+          user.roles.push('admin');
+        } else {
+          user.roles = user.roles.filter((r) => r !== 'admin');
+        }
+      } catch {
+        $q.notify({ type: 'negative', message: 'Unable to edit user' });
+      }
+    };
+
     const columns = [
       { name: 'fullname', label: 'Name', sortable: true, align: 'left' },
       { label: 'Email', field: 'email', sortable: true, align: 'left' },
+      { name: 'isAdmin', label: 'Is Admin?', sortable: true, align: 'left' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
@@ -64,6 +126,7 @@ export default defineComponent({
     return {
       columns,
       users,
+      toggleAdmin,
       confirmDeleteUser,
     };
   },
