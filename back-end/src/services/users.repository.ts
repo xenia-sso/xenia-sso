@@ -34,6 +34,7 @@ export class UsersRepository {
   async create(obj: Omit<UserModel, "_id" | "roles">) {
     const model = await this.model.create({
       ...obj,
+      email: obj.email.toLowerCase(),
       password: await encryptPassword(obj.password),
     });
     await model.save();
@@ -42,7 +43,14 @@ export class UsersRepository {
   }
 
   async update(id: string, obj: { email: string; firstName: string; lastName: string }) {
-    const model = await this.model.findByIdAndUpdate(id, obj, { new: true });
+    const model = await this.model.findByIdAndUpdate(
+      id,
+      {
+        ...obj,
+        email: obj.email.toLowerCase(),
+      },
+      { new: true }
+    );
     if (!model) {
       throw new NotFound("Not Found");
     }
