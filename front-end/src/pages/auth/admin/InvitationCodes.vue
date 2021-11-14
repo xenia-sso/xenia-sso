@@ -8,7 +8,7 @@
   <q-table :columns="columns" :rows="invitationCodes" row-key="code">
     <template #body-cell-link="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="primary" icon="link" flat round @click="copyLink(props.row.id)"></q-btn>
+        <q-btn color="primary" icon="link" flat round @click="copyLink(props.row.code)"></q-btn>
       </q-td>
     </template>
     <template #body-cell-delete="props">
@@ -27,6 +27,7 @@ import copy from 'copy-to-clipboard';
 
 interface InvitationCode {
   id: string;
+  code: string;
 }
 
 export default defineComponent({
@@ -73,7 +74,7 @@ export default defineComponent({
     };
 
     const columns = [
-      { label: 'Code', field: 'id', sortable: true, align: 'left' },
+      { label: 'Code', field: 'code', sortable: true, align: 'left' },
       { name: 'link', label: '', sortable: false, align: 'center' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];

@@ -75,7 +75,7 @@ export class AuthController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { invitationCode, ...userPayload } = body;
     const user = await this.usersRepository.create(userPayload);
-    await this.invitationCodesRepository.delete(body.invitationCode);
+    await this.invitationCodesRepository.deleteByCode(body.invitationCode);
     return user;
   }
 
