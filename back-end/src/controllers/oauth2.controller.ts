@@ -12,6 +12,7 @@ import { UsersRepository } from "../services/users.repository";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generate } from "randomstring";
 import { generateIdToken } from "../utils/openid";
+import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
 
 class AuthorizeBody {
   @Required()
@@ -133,18 +134,11 @@ export class Oauth2Controller {
   }
 
   @UseAuth(ClientMiddleware)
+  @UseAuth(AccessTokenMiddleware, { isIntrospectEndpoint: true })
   @Post("/introspect")
-  async introspect(@Context() ctx: Context, @QueryParams() query: IntrospectQuery) {
-    const { active, userId } = await this.accessTokensRepository.isAccessTokenActive(query.token, ctx.get("client").id);
-    if (!active) {
-      await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
-    }
-
-    const client = ctx.get("client");
-    if (!this.clientsRepository.isUserGrantedToClient(userId.toString(), client)) {
-      throw new Forbidden("Forbidden");
-    }
-    return { active };
+  async introspect(@QueryParams() query: IntrospectQuery) {
+    await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
+    return { active: true };
   }
 
   @UseAuth(ClientMiddleware)

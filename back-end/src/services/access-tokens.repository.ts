@@ -23,10 +23,11 @@ export class AccessTokensRepository {
     if (DateTime.fromJSDate(lastUsed).diff(DateTime.now(), "days").days < -90) {
       return { active: false, userId: accessToken.userId };
     }
-
-    accessToken.lastUsed = DateTime.now().toJSDate();
-    await accessToken.save();
     return { active: true, userId: accessToken.userId };
+  }
+
+  async updateAccessTokenLastUsed(token: string) {
+    return this.model.findOneAndUpdate({ token }, { lastUsed: DateTime.now().toJSDate() });
   }
 
   getAccessTokenByToken(token: string) {
