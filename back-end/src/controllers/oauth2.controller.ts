@@ -20,8 +20,7 @@ class AuthorizeBody {
   clientId: string;
 
   @Required()
-  @Enum("openid")
-  scope: "openid";
+  scope: string;
 
   @Required()
   @Enum("code")
@@ -122,14 +121,15 @@ export class Oauth2Controller {
       clientId: client.id,
       userId: user.id,
       lastUsed: DateTime.now().toJSDate(),
+      scope: authCode.scope,
       token,
     });
 
     return {
       token_type: "Bearer",
       access_token: token,
-      scope: "openid",
-      id_token: generateIdToken(user),
+      scope: authCode.scope,
+      id_token: generateIdToken(user, authCode.scope),
     };
   }
 

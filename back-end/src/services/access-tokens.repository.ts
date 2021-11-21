@@ -27,7 +27,7 @@ export class AccessTokensRepository {
   }
 
   async updateAccessTokenLastUsed(token: string) {
-    return this.model.findOneAndUpdate({ token }, { lastUsed: DateTime.now().toJSDate() });
+    return this.model.findOneAndUpdate({ token }, { lastUsed: DateTime.now().toJSDate() }, { new: true });
   }
 
   getAccessTokenByToken(token: string) {

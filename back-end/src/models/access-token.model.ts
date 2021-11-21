@@ -28,6 +28,9 @@ export class AccessTokenModel {
   token: string;
 
   @Required()
+  scope: string;
+
+  @Required()
   @Format("date-time")
   lastUsed: Date;
 }

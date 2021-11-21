@@ -1,4 +1,5 @@
 import { Context, Controller, Get, Inject, QueryParams, UseAuth } from "@tsed/common";
+import { InternalServerError } from "@tsed/exceptions";
 import { ContentType, Required } from "@tsed/schema";
 import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
 import { ClientMiddleware } from "../middlewares/client.middleware";
@@ -19,9 +20,13 @@ export class UserinfoController {
   @UseAuth(AccessTokenMiddleware)
   @Get("/userinfo")
   async userinfo(@Context() ctx: Context, @QueryParams() query: UserinfoQuery) {
-    await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
+    const accessToken = await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
+    if (!accessToken) {
+      throw new InternalServerError("Internal Server Error");
+    }
+
     return {
-      id_token: generateIdToken(ctx.get("user")),
+      id_token: generateIdToken(ctx.get("user"), accessToken.scope),
     };
   }
 }
