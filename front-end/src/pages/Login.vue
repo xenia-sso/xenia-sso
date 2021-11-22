@@ -1,10 +1,18 @@
 <i18n>
 {
   "en": {
-    "login": "Login"
+    "login": "Login",
+    "password": "Password",
+    "noAccountYet": "No account yet?",
+    "register": "Register",
+    "continue": "Continue"
   },
   "fr": {
-    "login": "Connexion"
+    "login": "Connexion",
+    "password": "Mot de passe",
+    "noAccountYet": "Pas encore de compte?",
+    "register": "S'inscrire",
+    "continue": "Continuer"
   }
 }
 </i18n>
@@ -33,19 +41,19 @@
           square
           dense
           type="password"
-          label="Password"
+          :label="$t('password')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">No account yet? </span>
-        <router-link :to="registerLink" class="text-primary">Register</router-link>
+        <span class="text-grey-7">{{ $t('noAccountYet') }}&nbsp;</span>
+        <router-link :to="registerLink" class="text-primary">{{ $t('register') }}</router-link>
       </div>
 
       <div class="col col-12 q-mt-sm">
-        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">Continue</q-btn>
+        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">{{ $t('continue') }}</q-btn>
       </div>
     </div>
   </q-form>

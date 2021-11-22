@@ -1,7 +1,36 @@
+<i18n>
+{
+  "en": {
+    "register": "Register",
+    "invitationCode": "Invitation code",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "passwordDoesNotMatch": "Does not match password.",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login",
+    "continue": "Continue"
+  },
+  "fr": {
+    "register": "Inscription",
+    "invitationCode": "Code d'invitation",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmation",
+    "passwordDoesNotMatch": "Les mots de passe ne correspondent pas.",
+    "alreadyHaveAccount": "Vous avez un compte?",
+    "login": "Connexion",
+    "continue": "Continuer"
+  }
+}
+</i18n>
+
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">Register</div>
+      <div class="col col-12 text-h6">{{ $t('register') }}</div>
 
       <div class="col col-12">
         <q-input
@@ -9,7 +38,7 @@
           filled
           square
           dense
-          label="Invitation code"
+          :label="$t('invitationCode')"
           lazy-rules
           :disable="!canEditInvitationCode"
           :rules="[RULES.required]"
@@ -38,7 +67,7 @@
           filled
           square
           dense
-          label="Firstname"
+          :label="$t('firstName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -49,7 +78,7 @@
           filled
           square
           dense
-          label="Lastname"
+          :label="$t('lastName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -66,7 +95,7 @@
           square
           dense
           type="password"
-          label="Password"
+          :label="$t('password')"
           lazy-rules
           :rules="[RULES.required, RULES.password]"
         ></q-input>
@@ -79,19 +108,19 @@
           square
           dense
           type="password"
-          label="Confirm password"
+          :label="$t('confirmPassword')"
           lazy-rules
-          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || 'Does not match password.']"
+          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || $t('passwordDoesNotMatch')]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">Already have an account? </span>
-        <router-link to="/login" class="text-primary">Login</router-link>
+        <span class="text-grey-7">{{ $t('alreadyHaveAccount') }}&nbsp;</span>
+        <router-link to="/login" class="text-primary">{{ $t('login') }}</router-link>
       </div>
 
       <div class="col col-12">
-        <q-btn type="submit" color="primary" class="full-width q-mt-sm">Continue</q-btn>
+        <q-btn type="submit" color="primary" class="full-width q-mt-sm">{{ $t('continue') }}</q-btn>
       </div>
     </div>
   </q-form>
