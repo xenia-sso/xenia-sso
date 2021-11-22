@@ -1,11 +1,11 @@
 export default {
   en: {
-    // form validation
-    fieldRequired: 'This field is required.',
-    invalidEmail: 'Invalid email.',
-    invalidPassword: 'Should contain at least 6 characters.',
-    invalidUrl: 'Invalid URL.',
-    // page titles
+    validation: {
+      fieldRequired: 'This field is required.',
+      invalidEmail: 'Invalid email.',
+      invalidPassword: 'Should contain at least 6 characters.',
+      invalidUrl: 'Invalid URL.',
+    },
     pageTitles: {
       myProfile: 'My Profile',
       myApps: 'My Apps',
@@ -15,12 +15,12 @@ export default {
     },
   },
   fr: {
-    // form validation
-    fieldRequired: 'Ce champ est requis.',
-    invalidEmail: 'Email invalide.',
-    invalidPassword: 'Doit contenir au moins 6 caractères.',
-    invalidUrl: 'URL invalide.',
-    // page titles
+    validation: {
+      fieldRequired: 'Ce champ est requis.',
+      invalidEmail: 'Email invalide.',
+      invalidPassword: 'Doit contenir au moins 6 caractères.',
+      invalidUrl: 'URL invalide.',
+    },
     pageTitles: {
       myProfile: 'Mon Profil',
       myApps: 'Mes Applis',
