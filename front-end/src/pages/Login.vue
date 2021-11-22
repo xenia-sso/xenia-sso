@@ -1,7 +1,18 @@
+<i18n>
+{
+  "en": {
+    "login": "Login"
+  },
+  "fr": {
+    "login": "Connexion"
+  }
+}
+</i18n>
+
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">Login</div>
+      <div class="col col-12 text-h6">{{ $t('login') }}</div>
 
       <div class="col col-12">
         <q-input
