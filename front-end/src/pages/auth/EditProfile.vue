@@ -1,8 +1,35 @@
+<i18n>
+{
+  "en": {
+    "editProfile": "Edit profile",
+    "personalInformation": "Personal information",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "submit": "Submit",
+    "security": "Security",
+    "changePassword": "Change password",
+    "account": "Account",
+    "deleteAccount": "Delete my account"
+  },
+  "fr": {
+    "editProfile": "Edition du profil",
+    "personalInformation": "Informations personnelles",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "submit": "Valider",
+    "security": "Securité",
+    "changePassword": "Changer de mot de passe",
+    "account": "Compte",
+    "deleteAccount": "Supprimer mon compte"
+  }
+}
+</i18n>
+
 <template>
   <div class="row q-col-gutter-lg">
-    <div class="col col-12 text-h6">Edit profile</div>
+    <div class="col col-12 text-h6">{{ $t('editProfile') }}</div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">Personal information</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('personalInformation') }}</div>
     <div class="col col-12 col-md-9">
       <q-form @submit="submit">
         <div class="row q-col-gutter-sm">
@@ -24,7 +51,7 @@
               filled
               square
               dense
-              label="Firstname"
+              :label="$t('firstName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -35,7 +62,7 @@
               filled
               square
               dense
-              label="Lastname"
+              :label="$t('lastName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -43,7 +70,7 @@
 
           <div class="col col-12">
             <q-btn type="submit" color="primary" class="full-width q-mt-sm" :loading="isSubmitingProfileEdit">
-              Submit
+              {{ $t('submit') }}
             </q-btn>
           </div>
         </div>
@@ -54,18 +81,18 @@
       <q-separator />
     </div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">Security</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('security') }}</div>
     <div class="col col-12 col-md-9">
-      <q-btn color="primary" class="full-width" @click="changePassword()">Change password</q-btn>
+      <q-btn color="primary" class="full-width" @click="changePassword()">{{ $t('changePassword') }}</q-btn>
     </div>
 
     <div class="col col-12">
       <q-separator />
     </div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">Account</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('account') }}</div>
     <div class="col col-12 col-md-9">
-      <q-btn color="negative" class="full-width" @click="confirmDeleteAccount()">Delete my account</q-btn>
+      <q-btn color="negative" class="full-width" @click="confirmDeleteAccount()">{{ $t('deleteAccount') }}</q-btn>
     </div>
   </div>
 </template>
