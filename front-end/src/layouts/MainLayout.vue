@@ -1,14 +1,25 @@
+<i18n>
+{
+  "en": {
+    "logout": "Logout"
+  },
+  "fr": {
+    "logout": "Déconnexion"
+  }
+}
+</i18n>
+
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>SSO</q-toolbar-title>
+        <q-toolbar-title>Xenia</q-toolbar-title>
         <div>
           <q-btn outline rounded @click="logout()">
             <div class="row items-center no-wrap">
               <q-icon left name="logout" />
-              <div class="text-center">Logout</div>
+              <div class="text-center">{{ $t('logout') }}</div>
             </div>
           </q-btn>
         </div>
