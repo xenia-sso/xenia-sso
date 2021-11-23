@@ -5,7 +5,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ $t(title) }}</q-item-label>
+      <q-item-label>{{ t(title) }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -13,6 +13,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -39,6 +40,8 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
+    const { t } = useI18n();
+
     const navigate = () => {
       void router.push(props.path);
     };
@@ -50,6 +53,7 @@ export default defineComponent({
     return {
       navigate,
       active,
+      t,
     };
   },
 });

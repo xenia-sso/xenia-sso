@@ -13,6 +13,10 @@ export default {
       users: 'Users',
       invitationCodes: 'Invitation codes',
     },
+    errors: {
+      unexpectedError: 'An unexpected error occurred. Try again later.',
+      wrongCredentials: 'Wrong credentials.',
+    },
   },
   fr: {
     validation: {
@@ -27,6 +31,10 @@ export default {
       clients: 'Clients',
       users: 'Utilisateurs',
       invitationCodes: "Codes d'invitation",
+    },
+    errors: {
+      unexpectedError: 'Une erreur est survenue. Essayez à nouveau.',
+      wrongCredentials: 'Identifiants incorrects.',
     },
   },
 };

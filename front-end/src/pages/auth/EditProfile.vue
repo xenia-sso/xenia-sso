@@ -27,9 +27,9 @@
 
 <template>
   <div class="row q-col-gutter-lg">
-    <div class="col col-12 text-h6">{{ $t('editProfile') }}</div>
+    <div class="col col-12 text-h6">{{ t('editProfile') }}</div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('personalInformation') }}</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ t('personalInformation') }}</div>
     <div class="col col-12 col-md-9">
       <q-form @submit="submit">
         <div class="row q-col-gutter-sm">
@@ -51,7 +51,7 @@
               filled
               square
               dense
-              :label="$t('firstName')"
+              :label="t('firstName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -62,7 +62,7 @@
               filled
               square
               dense
-              :label="$t('lastName')"
+              :label="t('lastName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -70,7 +70,7 @@
 
           <div class="col col-12">
             <q-btn type="submit" color="primary" class="full-width q-mt-sm" :loading="isSubmitingProfileEdit">
-              {{ $t('submit') }}
+              {{ t('submit') }}
             </q-btn>
           </div>
         </div>
@@ -81,18 +81,18 @@
       <q-separator />
     </div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('security') }}</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ t('security') }}</div>
     <div class="col col-12 col-md-9">
-      <q-btn color="primary" class="full-width" @click="changePassword()">{{ $t('changePassword') }}</q-btn>
+      <q-btn color="primary" class="full-width" @click="changePassword()">{{ t('changePassword') }}</q-btn>
     </div>
 
     <div class="col col-12">
       <q-separator />
     </div>
 
-    <div class="col col-12 col-md-3 text-subtitle1">{{ $t('account') }}</div>
+    <div class="col col-12 col-md-3 text-subtitle1">{{ t('account') }}</div>
     <div class="col col-12 col-md-9">
-      <q-btn color="negative" class="full-width" @click="confirmDeleteAccount()">{{ $t('deleteAccount') }}</q-btn>
+      <q-btn color="negative" class="full-width" @click="confirmDeleteAccount()">{{ t('deleteAccount') }}</q-btn>
     </div>
   </div>
 </template>
@@ -104,10 +104,12 @@ import { RULES } from 'src/ts/utils/form-validation';
 import ChangePassword from 'src/components/dialogs/ChangePassword.vue';
 import { useCurrentUser } from '../../composables/current-user';
 import { call, CallError, User } from '../../ts/api';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
+    const { t } = useI18n();
 
     const { currentUser } = useCurrentUser();
 
@@ -187,6 +189,7 @@ export default defineComponent({
       changePassword,
       confirmDeleteAccount,
       isSubmitingProfileEdit,
+      t,
     };
   },
 });

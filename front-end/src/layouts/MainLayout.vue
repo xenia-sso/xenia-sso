@@ -19,7 +19,7 @@
           <q-btn outline rounded @click="logout()">
             <div class="row items-center no-wrap">
               <q-icon left name="logout" />
-              <div class="text-center">{{ $t('logout') }}</div>
+              <div class="text-center">{{ t('logout') }}</div>
             </div>
           </q-btn>
         </div>
@@ -56,6 +56,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import routes from 'src/router/routes';
 import { useCurrentUser } from 'src/composables/current-user';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -65,6 +66,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
+    const { t } = useI18n();
     const leftDrawerOpen = ref(false);
     const { currentUser } = useCurrentUser();
 
@@ -103,6 +105,7 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      t,
     };
   },
 });

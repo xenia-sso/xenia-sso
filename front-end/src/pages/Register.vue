@@ -30,7 +30,7 @@
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">{{ $t('register') }}</div>
+      <div class="col col-12 text-h6">{{ t('register') }}</div>
 
       <div class="col col-12">
         <q-input
@@ -38,7 +38,7 @@
           filled
           square
           dense
-          :label="$t('invitationCode')"
+          :label="t('invitationCode')"
           lazy-rules
           :disable="!canEditInvitationCode"
           :rules="[RULES.required]"
@@ -67,7 +67,7 @@
           filled
           square
           dense
-          :label="$t('firstName')"
+          :label="t('firstName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -78,7 +78,7 @@
           filled
           square
           dense
-          :label="$t('lastName')"
+          :label="t('lastName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -95,7 +95,7 @@
           square
           dense
           type="password"
-          :label="$t('password')"
+          :label="t('password')"
           lazy-rules
           :rules="[RULES.required, RULES.password]"
         ></q-input>
@@ -108,19 +108,19 @@
           square
           dense
           type="password"
-          :label="$t('confirmPassword')"
+          :label="t('confirmPassword')"
           lazy-rules
-          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || $t('passwordDoesNotMatch')]"
+          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || t('passwordDoesNotMatch')]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">{{ $t('alreadyHaveAccount') }}&nbsp;</span>
-        <router-link to="/login" class="text-primary">{{ $t('login') }}</router-link>
+        <span class="text-grey-7">{{ t('alreadyHaveAccount') }}&nbsp;</span>
+        <router-link to="/login" class="text-primary">{{ t('login') }}</router-link>
       </div>
 
       <div class="col col-12">
-        <q-btn type="submit" color="primary" class="full-width q-mt-sm">{{ $t('continue') }}</q-btn>
+        <q-btn type="submit" color="primary" class="full-width q-mt-sm">{{ t('continue') }}</q-btn>
       </div>
     </div>
   </q-form>
@@ -133,11 +133,13 @@ import { useRoute } from 'vue-router';
 import { call, CallError, login, User } from 'src/ts/api';
 import { useQuasar } from 'quasar';
 import { useCurrentUser } from 'src/composables/current-user';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
     const route = useRoute();
+    const { t } = useI18n();
     const canEditInvitationCode = ref(true);
 
     onMounted(() => {
@@ -193,6 +195,7 @@ export default defineComponent({
       loginLink,
       submit,
       canEditInvitationCode,
+      t,
     };
   },
 });

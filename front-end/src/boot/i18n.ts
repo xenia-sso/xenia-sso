@@ -7,6 +7,7 @@ export const i18n = createI18n({
   locale: Quasar.lang.getLocale()?.split('-')[0] || 'en',
   fallbackLocale: 'en',
   messages,
+  legacy: false,
 });
 
 export default ({ app }: { app: App }) => {

@@ -20,7 +20,7 @@
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">{{ $t('login') }}</div>
+      <div class="col col-12 text-h6">{{ t('login') }}</div>
 
       <div class="col col-12">
         <q-input
@@ -41,19 +41,19 @@
           square
           dense
           type="password"
-          :label="$t('password')"
+          :label="t('password')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">{{ $t('noAccountYet') }}&nbsp;</span>
-        <router-link :to="registerLink" class="text-primary">{{ $t('register') }}</router-link>
+        <span class="text-grey-7">{{ t('noAccountYet') }}&nbsp;</span>
+        <router-link :to="registerLink" class="text-primary">{{ t('register') }}</router-link>
       </div>
 
       <div class="col col-12 q-mt-sm">
-        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">{{ $t('continue') }}</q-btn>
+        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">{{ t('continue') }}</q-btn>
       </div>
     </div>
   </q-form>
@@ -66,11 +66,13 @@ import { CallError, login } from 'src/ts/api';
 import { useCurrentUser } from 'src/composables/current-user';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
     const route = useRoute();
+    const { t } = useI18n();
     const isLoading = ref(false);
     const { isSilentlyLoggingIn } = useCurrentUser();
 
@@ -101,12 +103,12 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: 'An unexpected error occurred. Try again later.' });
+          $q.notify({ type: 'negative', message: t('unexpectedError') });
           return;
         }
 
-        if (e.status === 400) {
-          $q.notify({ type: 'negative', message: 'Wrong credentials.' });
+        if (e.status === 401) {
+          $q.notify({ type: 'negative', message: t('wrongCredentals') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }
@@ -130,6 +132,7 @@ export default defineComponent({
       formFields,
       submit,
       isLoading,
+      t,
     };
   },
 });
