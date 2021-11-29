@@ -1,5 +1,5 @@
 import { BodyParams, Context, Controller, Inject, UseAuth } from "@tsed/common";
-import { BadRequest, Forbidden } from "@tsed/exceptions";
+import { Forbidden, Unauthorized } from "@tsed/exceptions";
 import { ContentType, Delete, Email, Get, MaxLength, MinLength, Put, Required } from "@tsed/schema";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { AuthorizationCodesRepository } from "../services/authorization-codes.repository";
@@ -59,7 +59,7 @@ export class ProfileController {
   async delete(@Context() ctx: Context, @BodyParams() body: DeleteAccountBody) {
     const user = ctx.get("user");
     if (!(await this.usersRepository.checkPassword(user.email, body.password))) {
-      throw new BadRequest("BadRequest");
+      throw new Unauthorized("Unauthorized");
     }
 
     if (user.roles.includes("admin") && (await this.usersRepository.isLastAdmin(user.id))) {
