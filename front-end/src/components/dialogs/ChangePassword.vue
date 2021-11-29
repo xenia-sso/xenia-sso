@@ -1,9 +1,30 @@
+<i18n>
+{
+  "en": {
+    "changePassword": "Change password",
+    "passwordDoesNotMatch": "Does not match password.",
+    "oldPassword": "Old password",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "submit": "Submit"
+  },
+  "fr": {
+    "changePassword": "Changer de mot de passe",
+    "passwordDoesNotMatch": "Les mots de passe ne correspondent pas.",
+    "oldPassword": "Mot de passe actuel",
+    "password": "Nouveau mot de passe",
+    "confirmPassword": "Confirmation",
+    "submit": "Valider"
+  }
+}
+</i18n>
+
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-py-md q-px-lg">
       <q-form @submit="submit">
         <div class="row q-col-gutter-sm">
-          <div class="col col-12 text-h6 q-mb-md">Change password</div>
+          <div class="col col-12 text-h6 q-mb-md">{{ t('changePassword') }}</div>
 
           <div class="col col-12">
             <q-input
@@ -13,7 +34,7 @@
               square
               dense
               type="password"
-              label="Old password"
+              :label="t('oldPassword')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -26,7 +47,7 @@
               square
               dense
               type="password"
-              label="Password"
+              :label="t('password')"
               lazy-rules
               :rules="[RULES.required, RULES.password]"
             ></q-input>
@@ -39,14 +60,14 @@
               square
               dense
               type="password"
-              label="Confirm password"
+              :label="t('confirmPassword')"
               lazy-rules
-              :rules="[RULES.required, RULES.password, (v) => v === formFields.password || 'Does not match password.']"
+              :rules="[RULES.required, RULES.password, (v) => v === formFields.password || t('passwordDoesNotMatch')]"
             ></q-input>
           </div>
 
           <div class="col col-12 q-mt-sm">
-            <q-btn type="submit" color="primary" class="full-width">Submit</q-btn>
+            <q-btn type="submit" color="primary" class="full-width">{{ t('submit') }}</q-btn>
           </div>
         </div>
       </q-form>
@@ -59,6 +80,7 @@ import { defineComponent, ref } from 'vue';
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { RULES } from 'src/ts/utils/form-validation';
 import { call } from 'src/ts/api';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   emits: [
@@ -68,6 +90,7 @@ export default defineComponent({
   ],
   setup() {
     const $q = useQuasar();
+    const { t } = useI18n();
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
     const formFields = ref({
@@ -87,13 +110,13 @@ export default defineComponent({
         });
         $q.notify({
           type: 'positive',
-          message: 'Password has been changed.',
+          message: t('notifications.passwordChanged'),
         });
         onDialogOK(formFields);
       } catch {
         $q.notify({
           type: 'negative',
-          message: 'Unable to change password.',
+          message: t('errors.unableChangePassword'),
         });
       }
     };
@@ -106,6 +129,7 @@ export default defineComponent({
       RULES,
       formFields,
       submit,
+      t,
     };
   },
 });

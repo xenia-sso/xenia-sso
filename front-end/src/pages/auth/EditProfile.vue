@@ -127,7 +127,7 @@ export default defineComponent({
       } catch {
         $q.notify({
           type: 'negative',
-          message: 'Unable to edit profile.',
+          message: t('errors.unableEditProfile'),
         });
       } finally {
         isSubmitingProfileEdit.value = false;
@@ -144,20 +144,19 @@ export default defineComponent({
 
     const confirmDeleteAccount = () => {
       $q.dialog({
-        title: 'Warning',
-        message:
-          'You are about to delete your account. This action cannot be undone. Please enter your password to confirm.',
+        title: t('labels.warning'),
+        message: t('confirmation.deleteAccount'),
         prompt: {
           model: '',
           type: 'password',
           filled: true,
-          label: 'Password',
+          label: t('labels.password'),
         },
         persistent: false,
         ok: {
           flat: false,
           color: 'negative',
-          label: 'confirm',
+          label: t('labels.confirm'),
         },
         cancel: {
           color: 'grey-5',
@@ -169,13 +168,13 @@ export default defineComponent({
           currentUser.value = undefined;
         } catch (e) {
           if (!(e instanceof CallError)) {
-            $q.notify({ type: 'negative', message: 'An unexpected error occurred. Try again later.' });
+            $q.notify({ type: 'negative', message: t('errors.unexpectedError') });
             return;
           }
 
-          let message = 'Unable to delete account.';
-          if (e.status === 400) {
-            message = 'Wrong credentials';
+          let message = t('errors.unableDeleteAccount');
+          if (e.status === 401) {
+            message = t('errors.wrongCredentials');
           }
           $q.notify({ type: 'negative', message });
         }
