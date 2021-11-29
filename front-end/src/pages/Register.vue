@@ -135,6 +135,9 @@ import { useQuasar } from 'quasar';
 import { useCurrentUser } from 'src/composables/current-user';
 import { useI18n } from 'vue-i18n';
 
+const BAD_REQUEST_STATUS_CODE = 400;
+const EMAIL_ALREADY_EXISTS = 'Email already exists.';
+
 export default defineComponent({
   setup() {
     const $q = useQuasar();
@@ -166,7 +169,11 @@ export default defineComponent({
           return;
         }
 
-        $q.notify({ type: 'negative', message: e.message });
+        if (e.status === BAD_REQUEST_STATUS_CODE && e.message === EMAIL_ALREADY_EXISTS) {
+          $q.notify({ type: 'negative', message: t('errors.emailAlreadyExists') });
+        } else {
+          $q.notify({ type: 'negative', message: e.message });
+        }
       }
     };
 

@@ -20,6 +20,7 @@ export default {
       unableDeleteAccount: 'Unable to delete account.',
       unableFetchApps: 'Unable to fetch apps.',
       unableChangePassword: 'Unable to change password.',
+      emailAlreadyExists: 'Email already exists.',
     },
     notifications: {
       passwordChanged: 'Password has been changed.',
@@ -55,6 +56,7 @@ export default {
       unableDeleteAccount: 'Erreur lors de la suppression du compte.',
       unableFetchApps: 'Erreur lors du chargement des applis.',
       unableChangePassword: 'Erreur lors du changement de mot de passe.',
+      emailAlreadyExists: 'Cette adresse email est déjà utilisée.',
     },
     notifications: {
       passwordChanged: 'Votre mot de passe a été changé.',

@@ -3,7 +3,7 @@ import { ContentType, Email, MaxLength, MinLength, Post, Put, Required } from "@
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { RefreshTokenMiddleware } from "../middlewares/refresh-token.middleware";
 import jwt from "jsonwebtoken";
-import { Forbidden, Unauthorized } from "@tsed/exceptions";
+import { BadRequest, Forbidden, Unauthorized } from "@tsed/exceptions";
 import { UsersRepository } from "../services/users.repository";
 import { InvitationCodesRepository } from "../services/invitation-codes.repository";
 import { DateTime } from "luxon";
@@ -74,9 +74,16 @@ export class AuthController {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { invitationCode, ...userPayload } = body;
-    const user = await this.usersRepository.create(userPayload);
-    await this.invitationCodesRepository.deleteByCode(body.invitationCode);
-    return user;
+    try {
+      const user = await this.usersRepository.create(userPayload);
+      await this.invitationCodesRepository.deleteByCode(body.invitationCode);
+      return user;
+    } catch (err) {
+      if (!(err instanceof Error)) {
+        throw err;
+      }
+      throw new BadRequest("Email already exists.");
+    }
   }
 
   @Post("/login")
