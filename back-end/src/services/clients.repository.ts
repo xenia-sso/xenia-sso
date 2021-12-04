@@ -50,6 +50,12 @@ export class ClientsRepository {
     return model;
   }
 
+  async checkAllClientIds(clientIds: string[]) {
+    const clientPromises = clientIds.map((c) => this.model.exists({ _id: c }));
+    const promiseResults = await Promise.allSettled(clientPromises);
+    return promiseResults.every((r) => r.status === "fulfilled" && r.value);
+  }
+
   delete(id: string) {
     return this.model.findByIdAndDelete(id);
   }

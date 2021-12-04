@@ -2,51 +2,40 @@ import { Inject, Injectable } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
 import { InvitationCodeModel } from "../models/invitation-code.model";
 import { generate } from "randomstring";
-import { ClientModel } from "../models/client.model";
-import { BadRequest } from "@tsed/exceptions";
 import { Types } from "mongoose";
 
 @Injectable()
 export class InvitationCodesRepository {
   @Inject(InvitationCodeModel)
-  private invitationCodesModel: MongooseModel<InvitationCodeModel>;
-
-  @Inject(ClientModel)
-  private clientsModel: MongooseModel<ClientModel>;
+  private model: MongooseModel<InvitationCodeModel>;
 
   getAll() {
-    return this.invitationCodesModel.find({});
+    return this.model.find({});
   }
 
   findByCode(code: string) {
-    return this.invitationCodesModel.findOne({ code });
+    return this.model.findOne({ code });
   }
 
   async create() {
     const code = generate({ length: 20 });
-    const invitationCode = await this.invitationCodesModel.create({ code, clients: [] });
+    const invitationCode = await this.model.create({ code, clients: [] });
     return invitationCode.save();
   }
 
   async setClients(id: string, clients: string[]) {
-    const clientPromises = clients.map((c) => this.clientsModel.exists({ _id: c }));
-    const promiseResults = await Promise.allSettled(clientPromises);
-    if (!promiseResults.every((r) => r.status === "fulfilled" && r.value)) {
-      throw new BadRequest("Some clients were not found.");
-    }
-
-    return this.invitationCodesModel.findByIdAndUpdate(id, { clients }, { new: true });
+    return this.model.findByIdAndUpdate(id, { clients }, { new: true });
   }
 
   removeClientFromAllInvitationCodes(clientId: string) {
-    return this.invitationCodesModel.updateMany({}, { $pull: { clients: new Types.ObjectId(clientId) } });
+    return this.model.updateMany({}, { $pull: { clients: new Types.ObjectId(clientId) } });
   }
 
   delete(id: string) {
-    return this.invitationCodesModel.findByIdAndDelete(id);
+    return this.model.findByIdAndDelete(id);
   }
 
   deleteByCode(code: string) {
-    return this.invitationCodesModel.findOneAndDelete({ code });
+    return this.model.findOneAndDelete({ code });
   }
 }
