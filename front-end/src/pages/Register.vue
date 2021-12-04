@@ -136,6 +136,7 @@ import { useCurrentUser } from 'src/composables/current-user';
 import { useI18n } from 'vue-i18n';
 
 const BAD_REQUEST_STATUS_CODE = 400;
+const FORBIDDEN_STATUS_CODE = 403;
 const EMAIL_ALREADY_EXISTS = 'Email already exists.';
 
 export default defineComponent({
@@ -171,6 +172,8 @@ export default defineComponent({
 
         if (e.status === BAD_REQUEST_STATUS_CODE && e.message === EMAIL_ALREADY_EXISTS) {
           $q.notify({ type: 'negative', message: t('errors.emailAlreadyExists') });
+        } else if (e.status === FORBIDDEN_STATUS_CODE) {
+          $q.notify({ type: 'negative', message: t('errors.invalidInvitationCode') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }

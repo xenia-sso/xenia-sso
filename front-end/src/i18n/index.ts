@@ -21,6 +21,7 @@ export default {
       unableFetchApps: 'Unable to fetch apps.',
       unableChangePassword: 'Unable to change password.',
       emailAlreadyExists: 'Email already exists.',
+      invalidInvitationCode: 'Invalid invitation code.',
     },
     notifications: {
       passwordChanged: 'Password has been changed.',
@@ -57,6 +58,7 @@ export default {
       unableFetchApps: 'Erreur lors du chargement des applis.',
       unableChangePassword: 'Erreur lors du changement de mot de passe.',
       emailAlreadyExists: 'Cette adresse email est déjà utilisée.',
+      invalidInvitationCode: "Code d'invitation invalide.",
     },
     notifications: {
       passwordChanged: 'Votre mot de passe a été changé.',
