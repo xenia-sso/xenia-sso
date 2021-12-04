@@ -49,7 +49,7 @@
               use-input
               use-chips
               input-debounce="0"
-              label="Granted allUsers"
+              label="Granted users"
               emit-value
               map-options
               @filter="filterUsers"

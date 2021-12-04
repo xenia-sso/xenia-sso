@@ -6,6 +6,26 @@
     </div>
   </div>
   <q-table :columns="columns" :rows="invitationCodes" row-key="code">
+    <template #body-cell-clients="props">
+      <q-td :props="props" auto-width>
+        <q-select
+          v-model="props.row.clients"
+          :options="filteredClients"
+          filled
+          dense
+          square
+          multiple
+          use-input
+          use-chips
+          input-debounce="0"
+          class="clients-select"
+          emit-value
+          map-options
+          @filter="filterClients"
+          @update:model-value="updateInvitCode(props.row.id, props.row.clients)"
+        />
+      </q-td>
+    </template>
     <template #body-cell-link="props">
       <q-td :props="props" class="text-center">
         <q-btn color="primary" icon="link" flat round @click="copyLink(props.row.code)"></q-btn>
@@ -24,6 +44,7 @@ import { useQuasar } from 'quasar';
 import { call } from 'src/ts/api';
 import { defineComponent, ref, onMounted } from 'vue';
 import copy from 'copy-to-clipboard';
+import { Client } from '../../../models/clients';
 
 interface InvitationCode {
   id: string;
@@ -75,14 +96,52 @@ export default defineComponent({
 
     const columns = [
       { label: 'Code', field: 'code', sortable: true, align: 'left' },
+      { name: 'clients', label: 'Clients', sortable: false, align: 'center' },
       { name: 'link', label: '', sortable: false, align: 'center' },
       { name: 'delete', label: '', sortable: false, align: 'right' },
     ];
 
     const invitationCodes = ref<InvitationCode[]>([]);
+    const allClients = ref<Client[]>([]);
+    const filteredClients = ref<{ label: string; value: string }[]>([]);
     onMounted(async () => {
       invitationCodes.value = await call<InvitationCode[]>('/api/admin/invitation-codes');
+      allClients.value = await call<Client[]>('/api/admin/clients');
+      filteredClients.value = allClients.value.map((c) => ({
+        value: c.id,
+        label: `${c.name}`,
+      }));
     });
+
+    const filterClients = (val: string, update: (fn: () => void) => void) => {
+      update(() => {
+        if (val === '') {
+          filteredClients.value = allClients.value.map((c) => ({
+            value: c.id,
+            label: `${c.name}`,
+          }));
+        } else {
+          const needle = val.toLowerCase();
+          filteredClients.value = allClients.value
+            .filter((c) => {
+              return c.name.toLowerCase().includes(needle);
+            })
+            .map((c) => ({
+              value: c.id,
+              label: `${c.name}`,
+            }));
+        }
+      });
+    };
+
+    const updateInvitCode = async (id: string, clients: string[]) => {
+      await call<InvitationCode>(`/api/admin/invitation-codes/${id}/clients`, {
+        method: 'PUT',
+        body: {
+          clients,
+        },
+      });
+    };
 
     return {
       columns,
@@ -91,6 +150,9 @@ export default defineComponent({
       createCode,
       isLoading,
       copyLink,
+      filteredClients,
+      filterClients,
+      updateInvitCode,
     };
   },
 });
