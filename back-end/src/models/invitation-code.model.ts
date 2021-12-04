@@ -1,5 +1,6 @@
-import { Model, ObjectID } from "@tsed/mongoose";
+import { Model, ObjectID, Ref } from "@tsed/mongoose";
 import { Required } from "@tsed/schema";
+import { ClientModel } from "./client.model";
 
 @Model({ collection: "invitation-codes" })
 export class InvitationCodeModel {
@@ -8,4 +9,8 @@ export class InvitationCodeModel {
 
   @Required()
   code: string;
+
+  @Required()
+  @Ref(ClientModel)
+  clients: Ref<ClientModel>[];
 }

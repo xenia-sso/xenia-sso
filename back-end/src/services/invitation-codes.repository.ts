@@ -2,31 +2,46 @@ import { Inject, Injectable } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
 import { InvitationCodeModel } from "../models/invitation-code.model";
 import { generate } from "randomstring";
+import { ClientModel } from "../models/client.model";
+import { BadRequest } from "@tsed/exceptions";
 
 @Injectable()
 export class InvitationCodesRepository {
   @Inject(InvitationCodeModel)
-  private model: MongooseModel<InvitationCodeModel>;
+  private invitationCodesModel: MongooseModel<InvitationCodeModel>;
+
+  @Inject(ClientModel)
+  private clientsModel: MongooseModel<ClientModel>;
 
   getAll() {
-    return this.model.find({});
+    return this.invitationCodesModel.find({});
   }
 
   exists(code: string) {
-    return this.model.exists({ code });
+    return this.invitationCodesModel.exists({ code });
   }
 
   async create() {
     const code = generate({ length: 20 });
-    const invitationCode = await this.model.create({ code });
+    const invitationCode = await this.invitationCodesModel.create({ code, clients: [] });
     return invitationCode.save();
   }
 
+  async setClients(id: string, clients: string[]) {
+    const clientPromises = clients.map((c) => this.clientsModel.exists({ _id: c }));
+    const promiseResults = await Promise.allSettled(clientPromises);
+    if (!promiseResults.every((r) => r.status === "fulfilled" && r.value)) {
+      throw new BadRequest("Some clients were not found.");
+    }
+
+    return this.invitationCodesModel.findByIdAndUpdate(id, { clients }, { new: true });
+  }
+
   delete(id: string) {
-    return this.model.findByIdAndDelete(id);
+    return this.invitationCodesModel.findByIdAndDelete(id);
   }
 
   deleteByCode(code: string) {
-    return this.model.findOneAndDelete({ code });
+    return this.invitationCodesModel.findOneAndDelete({ code });
   }
 }
