@@ -7,6 +7,7 @@ import { BadRequest, Forbidden, Unauthorized } from "@tsed/exceptions";
 import { UsersRepository } from "../services/users.repository";
 import { InvitationCodesRepository } from "../services/invitation-codes.repository";
 import { DateTime } from "luxon";
+import { ClientsRepository } from "../services/clients.repository";
 
 class AuthenticateBody {
   @Required()
@@ -58,6 +59,7 @@ class ChangePasswordBody {
 @ContentType("application/json")
 export class AuthController {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
+  @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
   @Inject(InvitationCodesRepository) private invitationCodesRepository: InvitationCodesRepository;
 
   @Get("/user")
@@ -68,7 +70,8 @@ export class AuthController {
 
   @Post("/register")
   async register(@BodyParams() body: RegisterBody) {
-    if (!(await this.invitationCodesRepository.exists(body.invitationCode))) {
+    const matchingInvitationCode = await this.invitationCodesRepository.findByCode(body.invitationCode);
+    if (!matchingInvitationCode) {
       throw new Forbidden("Forbidden");
     }
 
@@ -77,6 +80,9 @@ export class AuthController {
     try {
       const user = await this.usersRepository.create(userPayload);
       await this.invitationCodesRepository.deleteByCode(body.invitationCode);
+      for (const clientId of matchingInvitationCode.clients) {
+        await this.clientsRepository.addUserToGrantedUsers(clientId.toString(), user.id);
+      }
       return user;
     } catch (err) {
       if (!(err instanceof Error)) {

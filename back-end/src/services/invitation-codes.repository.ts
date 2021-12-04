@@ -17,8 +17,8 @@ export class InvitationCodesRepository {
     return this.invitationCodesModel.find({});
   }
 
-  exists(code: string) {
-    return this.invitationCodesModel.exists({ code });
+  findByCode(code: string) {
+    return this.invitationCodesModel.findOne({ code });
   }
 
   async create() {

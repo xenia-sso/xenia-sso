@@ -54,6 +54,14 @@ export class ClientsRepository {
     return this.model.findByIdAndDelete(id);
   }
 
+  addUserToGrantedUsers(clientId: string, userId: string) {
+    return this.model.findByIdAndUpdate(
+      clientId,
+      { $push: { grantedUsers: new Types.ObjectId(userId) } },
+      { new: true }
+    );
+  }
+
   removeUserFromGrantedUsers(userId: string) {
     return this.model.updateMany({}, { $pull: { grantedUsers: new Types.ObjectId(userId) } });
   }
