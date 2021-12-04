@@ -26,6 +26,11 @@ const routes: RouteRecordRaw[] = [
     redirect: '/auth/profile',
   },
   {
+    path: '/initialize',
+    component: () => import('layouts/InitializeLayout.vue'),
+    children: [{ path: '', component: () => import('pages/Initialize.vue') }],
+  },
+  {
     path: '/login',
     component: () => import('layouts/AuthLayout.vue'),
     children: [{ path: '', component: () => import('pages/Login.vue') }],
