@@ -1,36 +1,7 @@
-<i18n>
-{
-  "en": {
-    "register": "Register",
-    "invitationCode": "Invitation code",
-    "firstName": "First name",
-    "lastName": "Last name",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "passwordDoesNotMatch": "Does not match password.",
-    "alreadyHaveAccount": "Already have an account?",
-    "login": "Login",
-    "continue": "Continue"
-  },
-  "fr": {
-    "register": "Inscription",
-    "invitationCode": "Code d'invitation",
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "password": "Mot de passe",
-    "confirmPassword": "Confirmation",
-    "passwordDoesNotMatch": "Les mots de passe ne correspondent pas.",
-    "alreadyHaveAccount": "Vous avez un compte?",
-    "login": "Connexion",
-    "continue": "Continuer"
-  }
-}
-</i18n>
-
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">{{ t('register') }}</div>
+      <div class="col col-12 text-h6">{{ t('forms.register') }}</div>
 
       <div class="col col-12">
         <q-input
@@ -38,7 +9,7 @@
           filled
           square
           dense
-          :label="t('invitationCode')"
+          :label="t('forms.invitationCode')"
           lazy-rules
           :disable="!canEditInvitationCode"
           :rules="[RULES.required]"
@@ -67,7 +38,7 @@
           filled
           square
           dense
-          :label="t('firstName')"
+          :label="t('forms.firstName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -78,7 +49,7 @@
           filled
           square
           dense
-          :label="t('lastName')"
+          :label="t('forms.lastName')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
@@ -95,7 +66,7 @@
           square
           dense
           type="password"
-          :label="t('password')"
+          :label="t('forms.password')"
           lazy-rules
           :rules="[RULES.required, RULES.password]"
         ></q-input>
@@ -108,19 +79,23 @@
           square
           dense
           type="password"
-          :label="t('confirmPassword')"
+          :label="t('forms.confirmPassword')"
           lazy-rules
-          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || t('passwordDoesNotMatch')]"
+          :rules="[
+            RULES.required,
+            RULES.password,
+            (v) => v === formFields.password || t('validation.passwordDoesNotMatch'),
+          ]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">{{ t('alreadyHaveAccount') }}&nbsp;</span>
-        <router-link to="/login" class="text-primary">{{ t('login') }}</router-link>
+        <span class="text-grey-7">{{ t('forms.alreadyHaveAccount') }}&nbsp;</span>
+        <router-link to="/login" class="text-primary">{{ t('forms.login') }}</router-link>
       </div>
 
       <div class="col col-12">
-        <q-btn type="submit" color="primary" class="full-width q-mt-sm">{{ t('continue') }}</q-btn>
+        <q-btn type="submit" color="primary" class="full-width q-mt-sm">{{ t('forms.continue') }}</q-btn>
       </div>
     </div>
   </q-form>
@@ -166,14 +141,14 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: t('errors.unexpectedError') });
+          $q.notify({ type: 'negative', message: t('forms.errors.unexpectedError') });
           return;
         }
 
         if (e.status === BAD_REQUEST_STATUS_CODE && e.message === EMAIL_ALREADY_EXISTS) {
-          $q.notify({ type: 'negative', message: t('errors.emailAlreadyExists') });
+          $q.notify({ type: 'negative', message: t('forms.errors.emailAlreadyExists') });
         } else if (e.status === FORBIDDEN_STATUS_CODE) {
-          $q.notify({ type: 'negative', message: t('errors.invalidInvitationCode') });
+          $q.notify({ type: 'negative', message: t('forms.errors.invalidInvitationCode') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }

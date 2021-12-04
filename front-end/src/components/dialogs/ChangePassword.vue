@@ -2,19 +2,9 @@
 {
   "en": {
     "changePassword": "Change password",
-    "passwordDoesNotMatch": "Does not match password.",
-    "oldPassword": "Old password",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "submit": "Submit"
   },
   "fr": {
     "changePassword": "Changer de mot de passe",
-    "passwordDoesNotMatch": "Les mots de passe ne correspondent pas.",
-    "oldPassword": "Mot de passe actuel",
-    "password": "Nouveau mot de passe",
-    "confirmPassword": "Confirmation",
-    "submit": "Valider"
   }
 }
 </i18n>
@@ -34,7 +24,7 @@
               square
               dense
               type="password"
-              :label="t('oldPassword')"
+              :label="t('forms.oldPassword')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -47,7 +37,7 @@
               square
               dense
               type="password"
-              :label="t('password')"
+              :label="t('forms.password')"
               lazy-rules
               :rules="[RULES.required, RULES.password]"
             ></q-input>
@@ -60,14 +50,18 @@
               square
               dense
               type="password"
-              :label="t('confirmPassword')"
+              :label="t('forms.confirmPassword')"
               lazy-rules
-              :rules="[RULES.required, RULES.password, (v) => v === formFields.password || t('passwordDoesNotMatch')]"
+              :rules="[
+                RULES.required,
+                RULES.password,
+                (v) => v === formFields.password || t('validation.passwordDoesNotMatch'),
+              ]"
             ></q-input>
           </div>
 
           <div class="col col-12 q-mt-sm">
-            <q-btn type="submit" color="primary" class="full-width">{{ t('submit') }}</q-btn>
+            <q-btn type="submit" color="primary" class="full-width">{{ t('forms.submit') }}</q-btn>
           </div>
         </div>
       </q-form>

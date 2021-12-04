@@ -18,10 +18,10 @@
         ></q-input>
       </div>
       <div class="col col-6">
-        <q-input filled square dense :label="t('firstName')" lazy-rules :rules="[RULES.required]"></q-input>
+        <q-input filled square dense :label="t('forms.firstName')" lazy-rules :rules="[RULES.required]"></q-input>
       </div>
       <div class="col col-6">
-        <q-input filled square dense :label="t('lastName')" lazy-rules :rules="[RULES.required]"></q-input>
+        <q-input filled square dense :label="t('forms.lastName')" lazy-rules :rules="[RULES.required]"></q-input>
       </div>
 
       <div class="col col-12">
@@ -34,7 +34,7 @@
           square
           dense
           type="password"
-          :label="t('password')"
+          :label="t('forms.password')"
           lazy-rules
           :rules="[RULES.required, RULES.password]"
         ></q-input>
@@ -46,14 +46,18 @@
           square
           dense
           type="password"
-          :label="t('confirmPassword')"
+          :label="t('forms.confirmPassword')"
           lazy-rules
-          :rules="[RULES.required, RULES.password, (v) => v === formFields.password || t('passwordDoesNotMatch')]"
+          :rules="[
+            RULES.required,
+            RULES.password,
+            (v) => v === formFields.password || t('validation.passwordDoesNotMatch'),
+          ]"
         ></q-input>
       </div>
 
       <div class="col col-12 q-mt-xs">
-        <q-btn color="primary" class="full-width">Submit</q-btn>
+        <q-btn color="primary" class="full-width">{{ t('forms.continue') }}</q-btn>
       </div>
     </q-form>
   </q-card>

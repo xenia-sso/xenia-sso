@@ -1,26 +1,7 @@
-<i18n>
-{
-  "en": {
-    "login": "Login",
-    "password": "Password",
-    "noAccountYet": "No account yet?",
-    "register": "Register",
-    "continue": "Continue"
-  },
-  "fr": {
-    "login": "Connexion",
-    "password": "Mot de passe",
-    "noAccountYet": "Pas encore de compte?",
-    "register": "S'inscrire",
-    "continue": "Continuer"
-  }
-}
-</i18n>
-
 <template>
   <q-form @submit="submit">
     <div class="row q-col-gutter-sm">
-      <div class="col col-12 text-h6">{{ t('login') }}</div>
+      <div class="col col-12 text-h6">{{ t('forms.login') }}</div>
 
       <div class="col col-12">
         <q-input
@@ -41,19 +22,19 @@
           square
           dense
           type="password"
-          :label="t('password')"
+          :label="t('forms.password')"
           lazy-rules
           :rules="[RULES.required]"
         ></q-input>
       </div>
 
       <div class="col col-12 text-right">
-        <span class="text-grey-7">{{ t('noAccountYet') }}&nbsp;</span>
-        <router-link :to="registerLink" class="text-primary">{{ t('register') }}</router-link>
+        <span class="text-grey-7">{{ t('forms.noAccountYet') }}&nbsp;</span>
+        <router-link :to="registerLink" class="text-primary">{{ t('forms.register') }}</router-link>
       </div>
 
       <div class="col col-12 q-mt-sm">
-        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">{{ t('continue') }}</q-btn>
+        <q-btn type="submit" color="primary" :loading="isLoading" class="full-width">{{ t('forms.continue') }}</q-btn>
       </div>
     </div>
   </q-form>
@@ -103,12 +84,12 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: t('unexpectedError') });
+          $q.notify({ type: 'negative', message: t('forms.unexpectedError') });
           return;
         }
 
         if (e.status === 401) {
-          $q.notify({ type: 'negative', message: t('wrongCredentals') });
+          $q.notify({ type: 'negative', message: t('forms.wrongCredentals') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }

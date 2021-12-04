@@ -3,9 +3,6 @@
   "en": {
     "editProfile": "Edit profile",
     "personalInformation": "Personal information",
-    "firstName": "First name",
-    "lastName": "Last name",
-    "submit": "Submit",
     "security": "Security",
     "changePassword": "Change password",
     "account": "Account",
@@ -14,9 +11,6 @@
   "fr": {
     "editProfile": "Edition du profil",
     "personalInformation": "Informations personnelles",
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "submit": "Valider",
     "security": "Securité",
     "changePassword": "Changer de mot de passe",
     "account": "Compte",
@@ -51,7 +45,7 @@
               filled
               square
               dense
-              :label="t('firstName')"
+              :label="t('forms.firstName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -62,7 +56,7 @@
               filled
               square
               dense
-              :label="t('lastName')"
+              :label="t('forms.lastName')"
               lazy-rules
               :rules="[RULES.required]"
             ></q-input>
@@ -70,7 +64,7 @@
 
           <div class="col col-12">
             <q-btn type="submit" color="primary" class="full-width q-mt-sm" :loading="isSubmitingProfileEdit">
-              {{ t('submit') }}
+              {{ t('forms.submit') }}
             </q-btn>
           </div>
         </div>

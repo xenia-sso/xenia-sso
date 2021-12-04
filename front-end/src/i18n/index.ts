@@ -1,10 +1,25 @@
 export default {
   en: {
+    forms: {
+      login: 'Login',
+      register: 'Register',
+      invitationCode: 'Invitation code',
+      firstName: 'First name',
+      lastName: 'Last name',
+      password: 'Password',
+      oldPassword: 'Old password',
+      confirmPassword: 'Confirm password',
+      alreadyHaveAccount: 'Already have an account?',
+      noAccountYet: 'No account yet?',
+      continue: 'Continue',
+      submit: 'Submit',
+    },
     validation: {
       fieldRequired: 'This field is required.',
       invalidEmail: 'Invalid email.',
       invalidPassword: 'Should contain at least 6 characters.',
       invalidUrl: 'Invalid URL.',
+      passwordDoesNotMatch: 'Does not match password.',
     },
     pageTitles: {
       myProfile: 'My Profile',
@@ -37,6 +52,21 @@ export default {
     },
   },
   fr: {
+    forms: {
+      login: 'Connexion',
+      register: 'Inscription',
+      invitationCode: "Code d'invitation",
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      password: 'Mot de passe',
+      oldPassword: 'Mot de passe actuel',
+      confirmPassword: 'Confirmation',
+      passwordDoesNotMatch: 'Les mots de passe ne correspondent pas.',
+      alreadyHaveAccount: 'Vous avez un compte?',
+      noAccountYet: 'Pas encore de compte?',
+      continue: 'Continuer',
+      submit: 'Valider',
+    },
     validation: {
       fieldRequired: 'Ce champ est requis.',
       invalidEmail: 'Email invalide.',
