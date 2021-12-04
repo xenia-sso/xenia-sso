@@ -4,6 +4,7 @@ import { InvitationCodeModel } from "../models/invitation-code.model";
 import { generate } from "randomstring";
 import { ClientModel } from "../models/client.model";
 import { BadRequest } from "@tsed/exceptions";
+import { Types } from "mongoose";
 
 @Injectable()
 export class InvitationCodesRepository {
@@ -35,6 +36,10 @@ export class InvitationCodesRepository {
     }
 
     return this.invitationCodesModel.findByIdAndUpdate(id, { clients }, { new: true });
+  }
+
+  removeClientFromAllInvitationCodes(clientId: string) {
+    return this.invitationCodesModel.updateMany({}, { $pull: { clients: new Types.ObjectId(clientId) } });
   }
 
   delete(id: string) {
