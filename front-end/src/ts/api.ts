@@ -2,6 +2,8 @@
 const UNAUTHORIZED_STATUS = 401;
 export const BAD_REQUEST_STATUS = 400;
 export const NOT_INITIALIZED_MESSAGE = 'SERVER_NOT_INITIALIZED';
+export const FORBIDDEN_STATUS = 403;
+export const EMAIL_ALREADY_EXISTS_MESSAGE = 'EMAIL_ALREADY_EXISTS';
 
 export class CallError extends Error {
   public name: string;

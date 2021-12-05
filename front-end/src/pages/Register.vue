@@ -105,14 +105,18 @@
 import { defineComponent, ref, onMounted, computed } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { useRoute } from 'vue-router';
-import { call, CallError, login, User } from 'src/ts/api';
+import {
+  BAD_REQUEST_STATUS,
+  call,
+  CallError,
+  EMAIL_ALREADY_EXISTS_MESSAGE,
+  FORBIDDEN_STATUS,
+  login,
+  User,
+} from 'src/ts/api';
 import { useQuasar } from 'quasar';
 import { useCurrentUser } from 'src/composables/current-user';
 import { useI18n } from 'vue-i18n';
-
-const BAD_REQUEST_STATUS_CODE = 400;
-const FORBIDDEN_STATUS_CODE = 403;
-const EMAIL_ALREADY_EXISTS = 'EMAIL_ALREADY_EXISTS';
 
 export default defineComponent({
   setup() {
@@ -141,13 +145,13 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: t('forms.errors.unexpectedError') });
+          $q.notify({ type: 'negative', message: t('errors.unexpectedError') });
           return;
         }
 
-        if (e.status === BAD_REQUEST_STATUS_CODE && e.message === EMAIL_ALREADY_EXISTS) {
+        if (e.status === BAD_REQUEST_STATUS && e.message === EMAIL_ALREADY_EXISTS_MESSAGE) {
           $q.notify({ type: 'negative', message: t('errors.emailAlreadyExists') });
-        } else if (e.status === FORBIDDEN_STATUS_CODE) {
+        } else if (e.status === FORBIDDEN_STATUS) {
           $q.notify({ type: 'negative', message: t('errors.invalidInvitationCode') });
         } else {
           $q.notify({ type: 'negative', message: e.message });

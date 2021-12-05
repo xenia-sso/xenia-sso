@@ -5,9 +5,10 @@
   </div>
 
   <q-card class="q-mt-md q-px-md q-py-md">
-    <q-form class="row q-col-gutter-sm">
+    <q-form class="row q-col-gutter-sm" @submit="submit">
       <div class="col col-12">
         <q-input
+          v-model.trim="formFields.email"
           filled
           square
           dense
@@ -18,10 +19,26 @@
         ></q-input>
       </div>
       <div class="col col-6">
-        <q-input filled square dense :label="t('forms.firstName')" lazy-rules :rules="[RULES.required]"></q-input>
+        <q-input
+          v-model.trim="formFields.firstName"
+          filled
+          square
+          dense
+          :label="t('forms.firstName')"
+          lazy-rules
+          :rules="[RULES.required]"
+        ></q-input>
       </div>
       <div class="col col-6">
-        <q-input filled square dense :label="t('forms.lastName')" lazy-rules :rules="[RULES.required]"></q-input>
+        <q-input
+          v-model.trim="formFields.lastName"
+          filled
+          square
+          dense
+          :label="t('forms.lastName')"
+          lazy-rules
+          :rules="[RULES.required]"
+        ></q-input>
       </div>
 
       <div class="col col-12">
@@ -30,6 +47,7 @@
 
       <div class="col col-12">
         <q-input
+          v-model="formFields.password"
           filled
           square
           dense
@@ -42,6 +60,7 @@
 
       <div class="col col-12">
         <q-input
+          v-model="formFields.confirmPassword"
           filled
           square
           dense
@@ -57,7 +76,7 @@
       </div>
 
       <div class="col col-12 q-mt-xs">
-        <q-btn color="primary" class="full-width">{{ t('forms.continue') }}</q-btn>
+        <q-btn type="submit" color="primary" class="full-width">{{ t('forms.continue') }}</q-btn>
       </div>
     </q-form>
   </q-card>
@@ -71,16 +90,26 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { RULES } from 'src/ts/utils/form-validation';
 import { useI18n } from 'vue-i18n';
-import { call } from '../ts/api';
+import { call, User, login, CallError, BAD_REQUEST_STATUS, EMAIL_ALREADY_EXISTS_MESSAGE } from '../ts/api';
 import { useRouter } from 'vue-router';
+import { useCurrentUser } from '../composables/current-user';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const { t } = useI18n();
+    const $q = useQuasar();
+    const formFields = ref({
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      confirmPassword: '',
+    });
 
     onMounted(async () => {
       const { initialized } = await call<{ initialized: boolean }>('/api/init/state', {
@@ -91,8 +120,40 @@ export default defineComponent({
       }
     });
 
+    const submit = async () => {
+      const body = {
+        email: formFields.value.email,
+        firstName: formFields.value.firstName,
+        lastName: formFields.value.lastName,
+        password: formFields.value.password,
+      };
+
+      try {
+        await call<User>('/api/init/start', {
+          method: 'POST',
+          body,
+        });
+        const user = await login(body.email, body.password);
+        const { currentUser } = useCurrentUser();
+        currentUser.value = user;
+      } catch (e) {
+        if (!(e instanceof CallError)) {
+          $q.notify({ type: 'negative', message: t('errors.unexpectedError') });
+          return;
+        }
+
+        if (e.status === BAD_REQUEST_STATUS && e.message === EMAIL_ALREADY_EXISTS_MESSAGE) {
+          $q.notify({ type: 'negative', message: t('errors.emailAlreadyExists') });
+        } else {
+          $q.notify({ type: 'negative', message: e.message });
+        }
+      }
+    };
+
     return {
+      formFields,
       RULES,
+      submit,
       t,
     };
   },
