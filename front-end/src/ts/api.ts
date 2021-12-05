@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 const UNAUTHORIZED_STATUS = 401;
+export const BAD_REQUEST_STATUS = 400;
+export const NOT_INITIALIZED_MESSAGE = 'SERVER_NOT_INITIALIZED';
 
 export class CallError extends Error {
   public name: string;
@@ -59,6 +60,11 @@ const refreshToken = () => {
   return internalCall<{ token: string }>('/api/auth/refresh', { method: 'POST' });
 };
 
+const onServerNotInitializedCallbacks: (() => void | Promise<void>)[] = [];
+export const onServerNotInitialized = (cb: () => void | Promise<void>) => {
+  onServerNotInitializedCallbacks.push(cb);
+};
+
 let jwt = '';
 export const call = async <T>(
   url: string,
@@ -73,6 +79,13 @@ export const call = async <T>(
     // All errors should ever be CallError since Network Errors are transformed into Call Errors in internalCall method.
     if (!(err instanceof CallError)) {
       throw new Error('An unexpected error occurred.');
+    }
+
+    if (err.status === BAD_REQUEST_STATUS && err.message === NOT_INITIALIZED_MESSAGE) {
+      for (const cb of onServerNotInitializedCallbacks) {
+        void cb();
+      }
+      throw err;
     }
 
     if (err.status !== UNAUTHORIZED_STATUS || !withRefresh || !authenticated) {

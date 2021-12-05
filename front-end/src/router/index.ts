@@ -10,6 +10,7 @@ import {
   NavigationGuardNext,
 } from 'vue-router';
 import routes from './routes';
+import { onServerNotInitialized } from '../ts/api';
 
 const { currentUser, onCurrentUserChange } = useCurrentUser();
 
@@ -37,6 +38,10 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE),
+  });
+
+  onServerNotInitialized(() => {
+    void Router.replace('/initialize');
   });
 
   onCurrentUserChange(async (user: User | undefined) => {
