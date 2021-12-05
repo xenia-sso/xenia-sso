@@ -1,7 +1,8 @@
 import { BodyParams, Controller, Inject, Post } from "@tsed/common";
-import { Forbidden } from "@tsed/exceptions";
+import { BadRequest, Forbidden } from "@tsed/exceptions";
 import { Required, MaxLength, Email, MinLength, ContentType } from "@tsed/schema";
 import { UsersRepository } from "../services/users.repository";
+import { EMAIL_ALREADY_EXISTS } from "../utils/errors";
 
 class InitializeBody {
   @Required()
@@ -35,10 +36,17 @@ export class InitializeController {
     if ((await this.usersRepository.countAdmins()) > 0) {
       throw new Forbidden("Server already initialized");
     }
-    const user = await this.usersRepository.create(body);
-    await this.usersRepository.setAdmin(user.id, true);
 
-    return user;
+    try {
+      const user = await this.usersRepository.create(body);
+      await this.usersRepository.setAdmin(user.id, true);
+      return user;
+    } catch (err) {
+      if (!(err instanceof Error)) {
+        throw err;
+      }
+      throw new BadRequest(EMAIL_ALREADY_EXISTS);
+    }
   }
 
   @Post("/state")

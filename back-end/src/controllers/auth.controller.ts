@@ -9,6 +9,7 @@ import { InvitationCodesRepository } from "../services/invitation-codes.reposito
 import { DateTime } from "luxon";
 import { ClientsRepository } from "../services/clients.repository";
 import { InitializedMiddleware } from "../middlewares/initialized.middleware";
+import { EMAIL_ALREADY_EXISTS } from "../utils/errors";
 
 class AuthenticateBody {
   @Required()
@@ -90,7 +91,7 @@ export class AuthController {
       if (!(err instanceof Error)) {
         throw err;
       }
-      throw new BadRequest("EMAIL_ALREADY_EXISTS");
+      throw new BadRequest(EMAIL_ALREADY_EXISTS);
     }
   }
 
