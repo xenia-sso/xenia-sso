@@ -88,7 +88,7 @@ export class AuthController {
       if (!(err instanceof Error)) {
         throw err;
       }
-      throw new BadRequest("Email already exists.");
+      throw new BadRequest("EMAIL_ALREADY_EXISTS");
     }
   }
 
