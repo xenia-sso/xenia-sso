@@ -14,6 +14,16 @@ export class UsersRepository {
     return this.model.find({});
   }
 
+  countAdmins() {
+    return this.model
+      .find({
+        $expr: {
+          $in: ["admin", "$roles"],
+        },
+      })
+      .countDocuments();
+  }
+
   findById(id: string) {
     return this.model.findById(id);
   }

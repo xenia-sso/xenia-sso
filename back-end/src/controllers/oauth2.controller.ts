@@ -1,4 +1,4 @@
-import { BodyParams, Context, Controller, Inject, Post, QueryParams, UseAuth } from "@tsed/common";
+import { BodyParams, Context, Controller, Inject, Post, QueryParams, UseAuth, UseBefore } from "@tsed/common";
 import { Forbidden, InternalServerError, NotFound, Unauthorized } from "@tsed/exceptions";
 import { ObjectID } from "@tsed/mongoose";
 import { ContentType, Enum, MaxLength, MinLength, Required } from "@tsed/schema";
@@ -13,6 +13,7 @@ import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generate } from "randomstring";
 import { generateIdToken } from "../utils/openid";
 import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
+import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 
 class AuthorizeBody {
   @Required()
@@ -60,6 +61,7 @@ class RevokeTokenQuery {
 
 @Controller("/oauth2")
 @ContentType("application/json")
+@UseBefore(InitializedMiddleware)
 export class Oauth2Controller {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;

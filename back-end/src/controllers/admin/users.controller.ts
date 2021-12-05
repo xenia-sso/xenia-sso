@@ -1,7 +1,8 @@
-import { BodyParams, Context, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
+import { BodyParams, Context, Controller, Get, Inject, PathParams, UseAuth, UseBefore } from "@tsed/common";
 import { Forbidden, NotFound } from "@tsed/exceptions";
 import { ContentType, Delete, Put, Required } from "@tsed/schema";
 import { AuthMiddleware } from "../../middlewares/auth.middleware";
+import { InitializedMiddleware } from "../../middlewares/initialized.middleware";
 import { AccessTokensRepository } from "../../services/access-tokens.repository";
 import { AuthorizationCodesRepository } from "../../services/authorization-codes.repository";
 import { ClientsRepository } from "../../services/clients.repository";
@@ -15,6 +16,7 @@ class SetAdminBody {
 @Controller("/admin/users")
 @ContentType("application/json")
 @UseAuth(AuthMiddleware, { role: "admin" })
+@UseBefore(InitializedMiddleware)
 export class UsersController {
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
   @Inject(AuthorizationCodesRepository) private authorizationCodesRepository: AuthorizationCodesRepository;

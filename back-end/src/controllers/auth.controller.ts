@@ -8,6 +8,7 @@ import { UsersRepository } from "../services/users.repository";
 import { InvitationCodesRepository } from "../services/invitation-codes.repository";
 import { DateTime } from "luxon";
 import { ClientsRepository } from "../services/clients.repository";
+import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 
 class AuthenticateBody {
   @Required()
@@ -57,6 +58,7 @@ class ChangePasswordBody {
 
 @Controller("/auth")
 @ContentType("application/json")
+@UseBefore(InitializedMiddleware)
 export class AuthController {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;

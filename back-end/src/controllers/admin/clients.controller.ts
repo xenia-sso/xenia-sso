@@ -1,12 +1,14 @@
-import { BodyParams, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
+import { BodyParams, Controller, Get, Inject, PathParams, UseAuth, UseBefore } from "@tsed/common";
 import { ContentType, Delete, Post, Put } from "@tsed/schema";
 import { AuthMiddleware } from "../../middlewares/auth.middleware";
+import { InitializedMiddleware } from "../../middlewares/initialized.middleware";
 import { ClientModel } from "../../models/client.model";
 import { ClientsRepository } from "../../services/clients.repository";
 import { InvitationCodesRepository } from "../../services/invitation-codes.repository";
 
 @Controller("/admin/clients")
 @ContentType("application/json")
+@UseBefore(InitializedMiddleware)
 @UseAuth(AuthMiddleware, { role: "admin" })
 export class ClientsController {
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;

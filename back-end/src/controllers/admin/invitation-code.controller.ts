@@ -1,7 +1,8 @@
-import { BodyParams, Controller, Get, Inject, PathParams, UseAuth } from "@tsed/common";
+import { BodyParams, Controller, Get, Inject, PathParams, UseAuth, UseBefore } from "@tsed/common";
 import { BadRequest } from "@tsed/exceptions";
 import { CollectionOf, ContentType, Delete, Post, Put, Required } from "@tsed/schema";
 import { AuthMiddleware } from "../../middlewares/auth.middleware";
+import { InitializedMiddleware } from "../../middlewares/initialized.middleware";
 import { ClientsRepository } from "../../services/clients.repository";
 import { InvitationCodesRepository } from "../../services/invitation-codes.repository";
 
@@ -15,6 +16,7 @@ class SetClientsBody {
 @Controller("/admin/invitation-codes")
 @ContentType("application/json")
 @UseAuth(AuthMiddleware, { role: "admin" })
+@UseBefore(InitializedMiddleware)
 export class InvitationCodesController {
   @Inject(InvitationCodesRepository) private invitationCodesRepository: InvitationCodesRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;

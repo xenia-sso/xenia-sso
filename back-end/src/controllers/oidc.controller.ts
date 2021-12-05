@@ -1,8 +1,9 @@
-import { Context, Controller, Get, Inject, QueryParams, UseAuth } from "@tsed/common";
+import { Context, Controller, Get, Inject, QueryParams, UseAuth, UseBefore } from "@tsed/common";
 import { InternalServerError } from "@tsed/exceptions";
 import { ContentType, Required } from "@tsed/schema";
 import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
 import { ClientMiddleware } from "../middlewares/client.middleware";
+import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generateIdToken } from "../utils/openid";
 
@@ -13,6 +14,7 @@ class UserinfoQuery {
 
 @Controller("/oidc")
 @ContentType("application/json")
+@UseBefore(InitializedMiddleware)
 export class UserinfoController {
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
 

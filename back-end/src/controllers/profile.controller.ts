@@ -1,4 +1,4 @@
-import { BodyParams, Context, Controller, Inject, UseAuth } from "@tsed/common";
+import { BodyParams, Context, Controller, Inject, UseAuth, UseBefore } from "@tsed/common";
 import { Forbidden, Unauthorized } from "@tsed/exceptions";
 import { ContentType, Delete, Email, Get, MaxLength, MinLength, Put, Required } from "@tsed/schema";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
@@ -6,6 +6,7 @@ import { AuthorizationCodesRepository } from "../services/authorization-codes.re
 import { ClientsRepository } from "../services/clients.repository";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { UsersRepository } from "../services/users.repository";
+import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 
 class EditProfileBody {
   @Required()
@@ -31,6 +32,7 @@ class DeleteAccountBody {
 
 @Controller("/profile")
 @ContentType("application/json")
+@UseBefore(InitializedMiddleware)
 @UseAuth(AuthMiddleware)
 export class ProfileController {
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
