@@ -25,12 +25,12 @@ class InitializeBody {
   lastName: string;
 }
 
-@Controller("/initialize")
+@Controller("/init")
 @ContentType("application/json")
 export class InitializeController {
   @Inject(UsersRepository) private usersRepository: UsersRepository;
 
-  @Post("/")
+  @Post("/start")
   async createAdmin(@BodyParams() body: InitializeBody) {
     if ((await this.usersRepository.countAdmins()) > 0) {
       throw new Forbidden("Server already initialized");
@@ -39,5 +39,10 @@ export class InitializeController {
     await this.usersRepository.setAdmin(user.id, true);
 
     return user;
+  }
+
+  @Post("/state")
+  async isInitialized() {
+    return { initialized: (await this.usersRepository.countAdmins()) > 0 };
   }
 }
