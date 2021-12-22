@@ -1,0 +1,19 @@
+{
+  "name": "xenia-sso",
+  "version": "0.0.1",
+  "description": "Xenia is a self-hosted identity provider designed for small users communities.",
+  "main": "back-end/dist/index.js",
+  "scripts": {
+    "postversion": "git push --follow-tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chamboug/xenia-sso.git"
+  },
+  "author": "Gaetan Chambouvet",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/chamboug/xenia-sso/issues"
+  },
+  "homepage": "https://github.com/chamboug/xenia-sso#readme"
+}
