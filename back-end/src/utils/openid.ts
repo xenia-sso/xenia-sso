@@ -25,5 +25,6 @@ export const generateIdToken = (user: UserModel & { id?: string }, scope: string
     }
   }
 
-  return sign(obj, process.env.ID_TOKEN_JWT_KEY);
+  // ID tokens are not meant to be verified on the client side, so no need for a secret here.
+  return sign(obj, "xenia");
 };

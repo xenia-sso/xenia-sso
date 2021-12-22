@@ -4,7 +4,6 @@ declare global {
       NODE_ENV: "development" | "production";
       MONGODB_URI: string;
       JWT_KEY: string;
-      ID_TOKEN_JWT_KEY: string;
     }
   }
 }
