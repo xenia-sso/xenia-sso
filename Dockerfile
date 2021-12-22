@@ -1,13 +1,5 @@
 FROM node:14.18.2-alpine
 
-ARG PORT
-ARG MONGODB_URI
-ARG JWT_KEY
-
-ENV PORT=$PORT
-ENV MONGODB_URI=$MONGODB_URI
-ENV JWT_KEY=$JWT_KEY
-
 ENV NODE_ENV=production
 
 RUN mkdir -p /usr/src/front-end
