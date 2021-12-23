@@ -89,7 +89,7 @@ export default defineComponent({
         }
 
         if (e.status === 401) {
-          $q.notify({ type: 'negative', message: t('errors.wrongCredentals') });
+          $q.notify({ type: 'negative', message: t('errors.wrongCredentials') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }
