@@ -84,12 +84,12 @@ export default defineComponent({
         currentUser.value = user;
       } catch (e) {
         if (!(e instanceof CallError)) {
-          $q.notify({ type: 'negative', message: t('forms.unexpectedError') });
+          $q.notify({ type: 'negative', message: t('errors.unexpectedError') });
           return;
         }
 
         if (e.status === 401) {
-          $q.notify({ type: 'negative', message: t('forms.wrongCredentals') });
+          $q.notify({ type: 'negative', message: t('errors.wrongCredentals') });
         } else {
           $q.notify({ type: 'negative', message: e.message });
         }
