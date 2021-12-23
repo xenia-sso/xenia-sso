@@ -1,5 +1,6 @@
 FROM node:14.18.2-alpine
 
+ENV PORT=3000
 ENV NODE_ENV=production
 
 RUN mkdir -p /usr/src/front-end
@@ -21,6 +22,6 @@ RUN npx quasar build
 WORKDIR /usr/src/back-end
 RUN npm run build
 
-EXPOSE $PORT
+EXPOSE 3000
 
 CMD ["npm", "run", "start:prod"]
