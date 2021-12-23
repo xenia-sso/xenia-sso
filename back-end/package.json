@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "preversion": "echo 'Cannot add tag in /back-end subfolder' && exit 1",
     "build": "npm run tsc",
     "tsc": "tsc --project tsconfig.compile.json",
     "tsc:w": "tsc --project tsconfig.json -w",

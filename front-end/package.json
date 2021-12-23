@@ -6,6 +6,7 @@
   "author": "Gaetan Chambouvet <gaetan.chambouvet@gmail.com>",
   "private": true,
   "scripts": {
+    "preversion": "echo 'Cannot add tag in /front-end subfolder' && exit 1",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
