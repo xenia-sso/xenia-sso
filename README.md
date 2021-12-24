@@ -53,9 +53,9 @@ Xenia is shipped as a Docker image and can be run with the following command:
 docker run -it -p 3000:3000 -e MONGODB_URI='[YOUR_MONGODB_URI]' -e JWT_KEY=[YOUR_JWT_KEY] chamboug/xenia:[VERSION_NUMBER]
 ```
 
-- MONGODB_URI: More information [here](https://docs.mongodb.com/manual/reference/connection-string/). Don't forget to wrap it inside single quotes.
-- JWT_KEY: Just like any other website, Xenia needs a secret key to sign session tokens. Just use some long and random string.
-- VERSION_NUMBER: Get it from [Docker Hub](https://hub.docker.com/repository/docker/chamboug/xenia/tags).
+- `MONGODB_URI`: More information [here](https://docs.mongodb.com/manual/reference/connection-string/). Don't forget to wrap it inside single quotes.
+- `JWT_KEY`: Just like any other website, Xenia needs a secret key to sign session tokens. Just use some long and random string.
+- `VERSION_NUMBER`: Get it from [Docker Hub](https://hub.docker.com/repository/docker/chamboug/xenia/tags).
 
 ## Plugins
 
