@@ -1,8 +1,8 @@
 {
   "name": "xenia-sso",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "",
+  "productName": "Xenia",
   "author": "Gaetan Chambouvet <gaetan.chambouvet@gmail.com>",
   "private": true,
   "scripts": {
