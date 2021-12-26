@@ -8,8 +8,8 @@ export class ClientMiddleware {
   @Inject(ClientsRepository) private repository: ClientsRepository;
 
   async use(@Req() req: Req, @Res() res: Res, @Context() ctx: Context) {
-    const clientId = req.headers["client_id"] as string;
-    const clientSecret = req.headers["client_secret"] as string;
+    const clientId = req.headers["client-id"] as string;
+    const clientSecret = req.headers["client-secret"] as string;
     if (!clientId || !clientSecret) {
       throw new Unauthorized("Unauthorized");
     }
