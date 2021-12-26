@@ -37,7 +37,7 @@ be1 -> be1: Verify JWT
 be1 -> be1: Decode user ID\nfrom JWT
 be1 -> be1: Find access\ntoken
 end
-be1 -> be2: <b>POST</b> /api/oauth2/introspect?token="..."\n<b>headers:</b> { client_id, client_secret }
+be1 -> be2: <b>POST</b> /api/oauth2/introspect?token="..."\n<b>headers:</b> { client-id, client-secret }
 
 group Check access token
 be2 <-> db2: Check client ID & secret
