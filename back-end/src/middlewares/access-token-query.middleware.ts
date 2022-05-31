@@ -5,13 +5,13 @@ import { ClientsRepository } from "../services/clients.repository";
 import { UsersRepository } from "../services/users.repository";
 
 @Middleware()
-export class AccessTokenMiddleware {
+export class AccessTokenQueryMiddleware {
   @Inject(AccessTokensRepository) private accessTokensRepository: AccessTokensRepository;
   @Inject(UsersRepository) private usersRepository: UsersRepository;
   @Inject(ClientsRepository) private clientsRepository: ClientsRepository;
 
   async use(@Context() ctx: Context, @Req() req: Req, @Res() res: Res, @Next() next: Next) {
-    const options = ctx.endpoint.get(AccessTokenMiddleware) || { isIntrospectEndpoint: false };
+    const options = ctx.endpoint.get(AccessTokenQueryMiddleware) || { isIntrospectEndpoint: false };
 
     try {
       const token = req.query.token?.toString();

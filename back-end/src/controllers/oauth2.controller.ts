@@ -12,7 +12,7 @@ import { UsersRepository } from "../services/users.repository";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generate } from "randomstring";
 import { generateIdToken } from "../utils/openid";
-import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
+import { AccessTokenQueryMiddleware } from "../middlewares/access-token-query.middleware";
 import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 
 class AuthorizeBody {
@@ -136,7 +136,7 @@ export class Oauth2Controller {
   }
 
   @UseAuth(ClientMiddleware)
-  @UseAuth(AccessTokenMiddleware, { isIntrospectEndpoint: true })
+  @UseAuth(AccessTokenQueryMiddleware, { isIntrospectEndpoint: true })
   @Post("/introspect")
   async introspect(@QueryParams() query: IntrospectQuery) {
     await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
