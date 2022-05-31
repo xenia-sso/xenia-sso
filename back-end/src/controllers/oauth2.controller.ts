@@ -135,8 +135,7 @@ export class Oauth2Controller {
     };
   }
 
-  @UseAuth(ClientMiddleware)
-  @UseAuth(AccessTokenQueryMiddleware, { isIntrospectEndpoint: true })
+  @UseAuth(AccessTokenQueryMiddleware)
   @Post("/introspect")
   async introspect(@QueryParams() query: IntrospectQuery) {
     await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
@@ -146,7 +145,7 @@ export class Oauth2Controller {
   @UseAuth(ClientMiddleware)
   @Post("/revoke-token")
   async revokeToken(@Context() ctx: Context, @QueryParams() query: RevokeTokenQuery) {
-    await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
+    await this.accessTokensRepository.deleteByToken(query.token);
     return { success: true };
   }
 }

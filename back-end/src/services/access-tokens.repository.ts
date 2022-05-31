@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@tsed/di";
-import { NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { DateTime } from "luxon";
 import { AccessTokenModel } from "../models/access-token.model";
@@ -14,16 +13,8 @@ export class AccessTokensRepository {
     return invitationCode.save();
   }
 
-  async isAccessTokenActive(token: string, clientId: string) {
-    const accessToken = await this.model.findOne({ token, clientId });
-    if (!accessToken) {
-      throw new NotFound("Access token not found");
-    }
-    const lastUsed = accessToken.lastUsed;
-    if (DateTime.fromJSDate(lastUsed).diff(DateTime.now(), "days").days < -90) {
-      return { active: false, userId: accessToken.userId };
-    }
-    return { active: true, userId: accessToken.userId };
+  async isAccessTokenActive(accessToken: AccessTokenModel) {
+    return DateTime.fromJSDate(accessToken.lastUsed).diff(DateTime.now(), "days").days >= -90;
   }
 
   async updateAccessTokenLastUsed(token: string) {
@@ -34,8 +25,8 @@ export class AccessTokensRepository {
     return this.model.findOne({ token });
   }
 
-  deleteByToken(token: string, clientId: string) {
-    return this.model.findOneAndDelete({ token, clientId });
+  deleteByToken(token: string) {
+    return this.model.findOneAndDelete({ token });
   }
 
   deleteByUser(userId: string) {
