@@ -1,4 +1,4 @@
-import { BodyParams, Context, Controller, Inject, Post, QueryParams, UseAuth, UseBefore } from "@tsed/common";
+import { BodyParams, Context, Controller, Inject, Post, QueryParams, Req, UseAuth, UseBefore } from "@tsed/common";
 import { Forbidden, InternalServerError, NotFound, Unauthorized } from "@tsed/exceptions";
 import { ObjectID } from "@tsed/mongoose";
 import { ContentType, Enum, MaxLength, MinLength, Required } from "@tsed/schema";
@@ -87,7 +87,7 @@ export class Oauth2Controller {
 
   @UseAuth(ClientMiddleware)
   @Post("/token")
-  async getAccessToken(@Context() ctx: Context, @QueryParams() query: GetAccessTokenQuery) {
+  async getAccessToken(@Context() ctx: Context, @Req() req: Req, @BodyParams() query: GetAccessTokenQuery) {
     const client = ctx.get("client");
     const authCode = await this.authCodesRepository.findAndDelete(query.code, client.id);
     if (!authCode) {
@@ -131,7 +131,7 @@ export class Oauth2Controller {
       token_type: "Bearer",
       access_token: token,
       scope: authCode.scope,
-      id_token: generateIdToken(user, authCode.scope),
+      id_token: generateIdToken(`${req.protocol}://${req.get("host")}`, client.id, user, authCode.scope),
     };
   }
 

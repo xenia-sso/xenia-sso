@@ -1,16 +1,23 @@
 import { sign } from "jsonwebtoken";
 import { UserModel } from "../models/user.model";
+import { DateTime } from "luxon";
 
-interface IdToken {
+export interface IdToken extends UserObj {
+  iss: string;
+  aud: string;
+  exp: number;
+}
+
+export interface UserObj {
   sub?: string;
   email?: string;
   given_name?: string;
   family_name?: string;
 }
 
-export const generateIdToken = (user: UserModel & { id?: string }, scope: string) => {
+export const generateUserObj = (user: UserModel & { id?: string }, scope: string) => {
+  const obj: UserObj = {};
   const splitScope = scope.split(" ");
-  const obj: IdToken = {};
 
   if (splitScope.includes("openid")) {
     obj.sub = user.id;
@@ -25,6 +32,21 @@ export const generateIdToken = (user: UserModel & { id?: string }, scope: string
     }
   }
 
-  // ID tokens are not meant to be verified on the client side, so no need for a secret here.
+  return obj;
+};
+
+export const generateIdToken = (
+  issuerUrl: string,
+  clientId: string,
+  user: UserModel & { id?: string },
+  scope: string
+) => {
+  const obj: IdToken = {
+    iss: issuerUrl,
+    aud: clientId,
+    exp: DateTime.now().plus({ days: 90 }).toUnixInteger(),
+    ...generateUserObj(user, scope),
+  };
+
   return sign(obj, "xenia");
 };
