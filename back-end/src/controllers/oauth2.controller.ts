@@ -24,6 +24,9 @@ class AuthorizeBody {
   scope: string;
 
   @Required()
+  state: string;
+
+  @Required()
   @Enum("code")
   responseType: "code";
 
@@ -71,6 +74,8 @@ export class Oauth2Controller {
   @UseAuth(AuthMiddleware)
   @Post("/authorize")
   async authorize(@Context() ctx: Context, @BodyParams() body: AuthorizeBody) {
+    // TODO store state
+    // TODO make store and code challenge optionals
     const user = ctx.get("user");
     const client = await this.clientsRepository.findById(body.clientId);
     if (!client) {

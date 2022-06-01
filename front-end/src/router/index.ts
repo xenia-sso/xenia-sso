@@ -55,6 +55,7 @@ export default route(function (/* { store, ssrContext } */) {
             body: {
               responseType: route.query['response_type'],
               scope: route.query['scope'],
+              state: route.query['state'],
               clientId: route.query['client_id'],
               codeChallenge,
               codeChallengeMethod: route.query['code_challenge_method'],
