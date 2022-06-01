@@ -64,7 +64,7 @@ export default route(function (/* { store, ssrContext } */) {
             route.query['redirect_uri'] as string
           }?code=${authorizationCode}&code_challenge=${encodeURIComponent(codeChallenge)}`;
           if (route.query['state']) {
-            url += `state=${encodeURIComponent(route.query['state'] as string)}`;
+            url += `&state=${encodeURIComponent(route.query['state'] as string)}`;
           }
           window.location.assign(url);
         } catch (e) {
