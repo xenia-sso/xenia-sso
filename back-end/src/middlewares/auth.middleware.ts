@@ -8,7 +8,6 @@ export class AuthMiddleware {
   @Inject(UsersRepository) private repository: UsersRepository;
 
   async use(@Req() req: Req, @Context() ctx: Context) {
-    // TODO check state
     const token = req.headers.authorization;
     if (!token) {
       throw new Unauthorized("Unauthorized");
