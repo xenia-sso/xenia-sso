@@ -37,7 +37,7 @@ class AuthorizeBody {
   codeChallengeMethod: "S256";
 }
 
-class GetAccessTokenQuery {
+class GetAccessTokenBody {
   @Required()
   @Enum("authorization_code")
   grant_type: string;
@@ -88,9 +88,9 @@ export class Oauth2Controller {
 
   @UseAuth(ClientMiddleware)
   @Post("/token")
-  async getAccessToken(@Context() ctx: Context, @Req() req: Req, @BodyParams() query: GetAccessTokenQuery) {
+  async getAccessToken(@Context() ctx: Context, @Req() req: Req, @BodyParams() body: GetAccessTokenBody) {
     const client = ctx.get("client");
-    const authCode = await this.authCodesRepository.findAndDelete(query.code, client.id);
+    const authCode = await this.authCodesRepository.findAndDelete(body.code, client.id);
     if (!authCode) {
       throw new NotFound("Authorization code not found");
     }
@@ -108,7 +108,7 @@ export class Oauth2Controller {
       throw new InternalServerError("Unhandled code challenge method");
     }
     const hash = createHash("sha256")
-      .update(query.code_verifier)
+      .update(body.code_verifier)
       .digest("base64")
       .toString()
       .replace(/\+/g, "-")
@@ -145,8 +145,9 @@ export class Oauth2Controller {
   }
 
   @UseAuth(ClientMiddleware)
+  @UseAuth(AccessTokenQueryMiddleware)
   @Post("/revoke-token")
-  async revokeToken(@Context() ctx: Context, @QueryParams() query: RevokeTokenQuery) {
+  async revokeToken(@QueryParams() query: RevokeTokenQuery) {
     await this.accessTokensRepository.deleteByToken(query.token);
     return { success: true };
   }
