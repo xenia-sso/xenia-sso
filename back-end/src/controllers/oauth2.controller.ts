@@ -136,6 +136,7 @@ export class Oauth2Controller {
     };
   }
 
+  @UseAuth(ClientMiddleware)
   @UseAuth(AccessTokenQueryMiddleware)
   @Post("/introspect")
   async introspect(@QueryParams() query: IntrospectQuery) {
