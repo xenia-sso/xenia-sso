@@ -44,7 +44,7 @@ export const generateIdToken = (
   const obj: IdToken = {
     iss: issuerUrl,
     aud: clientId,
-    exp: DateTime.now().plus({ days: 90 }).toUnixInteger(),
+    exp: DateTime.now().plus({ minutes: 15 }).toUnixInteger(),
     ...generateUserObj(user, scope),
   };
 
