@@ -11,16 +11,16 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "1.14.0",
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.6.5",
-    "quasar": "^2.0.0",
-    "vue-i18n": "9.2.0-beta.20"
+    "quasar": "2.7.1",
+    "vue-i18n": "9.2.0-beta.35"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
-    "@intlify/vue-i18n-loader": "4.0.1",
-    "@quasar/app": "^3.0.0",
+    "@intlify/vue-i18n-loader": "5.0.0",
+    "@quasar/app-webpack": "3.5.3",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
