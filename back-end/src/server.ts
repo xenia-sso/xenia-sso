@@ -1,5 +1,5 @@
 import { Configuration, Inject } from "@tsed/di";
-import { PlatformApplication, PlatformStaticsSettings } from "@tsed/common";
+import { PlatformApplication } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import compress from "compression";
 import cookieParser from "cookie-parser";
@@ -7,16 +7,7 @@ import methodOverride from "method-override";
 import express from "express";
 import "@tsed/ajv";
 import { config, rootDir } from "./config";
-
-const statics: PlatformStaticsSettings = {};
-if (process.env.NODE_ENV === "production") {
-  statics["/"] = [
-    {
-      root: `${rootDir}/public`,
-      hook: "$beforeRoutesInit",
-    },
-  ];
-}
+import history from "connect-history-api-fallback";
 
 @Configuration({
   ...config,
@@ -34,7 +25,6 @@ if (process.env.NODE_ENV === "production") {
       connectionOptions: {},
     },
   ],
-  statics,
 })
 export class Server {
   @Inject()
@@ -45,5 +35,17 @@ export class Server {
 
   $beforeRoutesInit(): void {
     this.app.use(cookieParser()).use(compress({})).use(methodOverride()).use(express.json());
+    if (process.env.NODE_ENV === "production") {
+      // https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite/README.md#configuring-the-middleware
+      const staticFileMiddleware = express.static(`${rootDir}/public`);
+      this.app.use(staticFileMiddleware);
+      this.app.use(
+        history({
+          disableDotRule: true,
+          verbose: true,
+        })
+      );
+      this.app.use(staticFileMiddleware);
+    }
   }
 }

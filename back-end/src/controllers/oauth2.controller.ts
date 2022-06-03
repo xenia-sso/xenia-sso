@@ -1,4 +1,4 @@
-import { BodyParams, Context, Controller, Inject, Post, QueryParams, UseAuth, UseBefore } from "@tsed/common";
+import { BodyParams, Context, Controller, Inject, Post, QueryParams, Req, UseAuth, UseBefore } from "@tsed/common";
 import { Forbidden, InternalServerError, NotFound, Unauthorized } from "@tsed/exceptions";
 import { ObjectID } from "@tsed/mongoose";
 import { ContentType, Enum, MaxLength, MinLength, Required } from "@tsed/schema";
@@ -12,7 +12,7 @@ import { UsersRepository } from "../services/users.repository";
 import { AccessTokensRepository } from "../services/access-tokens.repository";
 import { generate } from "randomstring";
 import { generateIdToken } from "../utils/openid";
-import { AccessTokenMiddleware } from "../middlewares/access-token.middleware";
+import { AccessTokenQueryMiddleware } from "../middlewares/access-token-query.middleware";
 import { InitializedMiddleware } from "../middlewares/initialized.middleware";
 
 class AuthorizeBody {
@@ -37,7 +37,7 @@ class AuthorizeBody {
   codeChallengeMethod: "S256";
 }
 
-class GetAccessTokenQuery {
+class GetAccessTokenBody {
   @Required()
   @Enum("authorization_code")
   grant_type: string;
@@ -87,9 +87,9 @@ export class Oauth2Controller {
 
   @UseAuth(ClientMiddleware)
   @Post("/token")
-  async getAccessToken(@Context() ctx: Context, @QueryParams() query: GetAccessTokenQuery) {
+  async getAccessToken(@Context() ctx: Context, @Req() req: Req, @BodyParams() body: GetAccessTokenBody) {
     const client = ctx.get("client");
-    const authCode = await this.authCodesRepository.findAndDelete(query.code, client.id);
+    const authCode = await this.authCodesRepository.findAndDelete(body.code, client.id);
     if (!authCode) {
       throw new NotFound("Authorization code not found");
     }
@@ -107,7 +107,7 @@ export class Oauth2Controller {
       throw new InternalServerError("Unhandled code challenge method");
     }
     const hash = createHash("sha256")
-      .update(query.code_verifier)
+      .update(body.code_verifier)
       .digest("base64")
       .toString()
       .replace(/\+/g, "-")
@@ -131,12 +131,12 @@ export class Oauth2Controller {
       token_type: "Bearer",
       access_token: token,
       scope: authCode.scope,
-      id_token: generateIdToken(user, authCode.scope),
+      id_token: generateIdToken(`${req.protocol}://${req.get("host")}`, client.id, user, authCode.scope),
     };
   }
 
   @UseAuth(ClientMiddleware)
-  @UseAuth(AccessTokenMiddleware, { isIntrospectEndpoint: true })
+  @UseAuth(AccessTokenQueryMiddleware)
   @Post("/introspect")
   async introspect(@QueryParams() query: IntrospectQuery) {
     await this.accessTokensRepository.updateAccessTokenLastUsed(query.token);
@@ -144,9 +144,10 @@ export class Oauth2Controller {
   }
 
   @UseAuth(ClientMiddleware)
+  @UseAuth(AccessTokenQueryMiddleware)
   @Post("/revoke-token")
-  async revokeToken(@Context() ctx: Context, @QueryParams() query: RevokeTokenQuery) {
-    await this.accessTokensRepository.deleteByToken(query.token, ctx.get("client").id);
+  async revokeToken(@QueryParams() query: RevokeTokenQuery) {
+    await this.accessTokensRepository.deleteByToken(query.token);
     return { success: true };
   }
 }

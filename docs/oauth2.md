@@ -83,7 +83,7 @@ fe1 -> be1: POST /code-challenge
 be1 -> be1: Generate\ncode_verifier &\ncode_challenge
 be1 --> fe1: <b>200</b> OK\n{ code_challenge }
 
-fe1 -> fe2: Redirect to /oauth2/authorize
+fe1 -> fe2: Redirect to /oauth2/login
 Note over fe1, fe2: <b>Params:</b> response_type="code", scope="email openid profile",\nclient_id="...", redirect_uri="...", code_challenge="...",\ncode_challenge_method="S256"
 fe2 -> be2: <b>GET</b> /user
 be2 --> fe2: <b>401</b> Unauthorized

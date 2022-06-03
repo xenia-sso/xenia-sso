@@ -19,6 +19,7 @@ export class CallError extends Error {
 const internalCall = async <T>(url: string, request: RequestInit = {}, token = '') => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   };
 
   if (token) {
