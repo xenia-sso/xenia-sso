@@ -71,7 +71,6 @@ export class Oauth2Controller {
   @UseAuth(AuthMiddleware)
   @Post("/authorize")
   async authorize(@Context() ctx: Context, @BodyParams() body: AuthorizeBody) {
-    // TODO make code challenge optional
     const user = ctx.get("user");
     const client = await this.clientsRepository.findById(body.clientId);
     if (!client) {
