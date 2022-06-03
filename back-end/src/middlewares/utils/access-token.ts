@@ -46,6 +46,6 @@ export class AccessTokenMiddleware {
       throw new NotFound("User not found");
     }
 
-    return { user, token };
+    return { user, token, client };
   }
 }

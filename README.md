@@ -22,7 +22,7 @@ As your portfolio grows, you need to code very same features for each of your pr
 ## Setup overview
 
 1. Setup a MongoDB instance (you can use [MongoDB Atlas](https://www.mongodb.com/atlas/database) which provides you with a free cloud instance)
-1. Start your Xenia instance (See section "Running Xenia" below) and create a admin user
+1. Start your Xenia instance (See section "Running Xenia" below) and create an admin user
 1. Register a new client (ie. webapp) from the admin panel and add access to your admin user
 1. Configure your webapp to connect to your Xenia instance using OAuth2 and OpenID Connect (OIDC). This step may be a bit overwhelming so I created some plugins that do all the job for you.
 1. That's it!
