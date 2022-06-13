@@ -57,7 +57,7 @@ export default defineComponent({
     const isLoading = ref(false);
 
     const copyLink = (code: string) => {
-      const url = `${window.location.origin}/#/register?code=${code}`;
+      const url = `${window.location.origin}/register?code=${code}`;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       copy(url);
       $q.notify({
