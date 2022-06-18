@@ -5,7 +5,7 @@
       <q-btn icon="add" round color="primary" :disable="isLoading" @click="createCode()" />
     </div>
   </div>
-  <q-table :columns="columns" :rows="invitationCodes" row-key="code">
+  <q-table :columns="columns" :rows="invitationCodes" row-key="code" :rows-per-page-options="[10, 20, 0]">
     <template #body-cell-clients="props">
       <q-td :props="props" auto-width>
         <q-select

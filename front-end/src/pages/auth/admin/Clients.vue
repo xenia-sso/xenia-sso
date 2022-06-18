@@ -5,7 +5,7 @@
       <q-btn round icon="add" color="primary" @click="createOrEditClient()" />
     </div>
   </div>
-  <q-table :columns="columns" :rows="clients">
+  <q-table :columns="columns" :rows="clients" :rows-per-page-options="[10, 20, 0]">
     <template #body-cell-allUsers="props">
       <q-td :props="props" class="text-center">
         <q-icon

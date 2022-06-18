@@ -1,5 +1,5 @@
 <template>
-  <q-table :columns="columns" :rows="users">
+  <q-table :columns="columns" :rows="users" :rows-per-page-options="[10, 20, 0]">
     <template #body-cell-fullname="props">
       <q-td :props="props" class="text-center">{{ props.row.firstName }}&nbsp;{{ props.row.lastName }}</q-td>
     </template>
