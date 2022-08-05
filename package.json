@@ -1,6 +1,6 @@
 {
   "name": "xenia-sso",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Xenia is a self-hosted identity provider designed for small users communities.",
   "main": "back-end/dist/index.js",
   "scripts": {
