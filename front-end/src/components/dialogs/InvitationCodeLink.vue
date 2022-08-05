@@ -17,14 +17,12 @@
       <div class="row items-center q-mb-md">
         <div class="col text-h6">{{ t('shareLink') }}</div>
         <div class="col-auto">
-          <q-btn icon="close" flat round />
+          <q-btn icon="close" flat round @click="onDialogHide" />
         </div>
       </div>
-      <div class="bg-grey-9 q-px-lg q-py-lg rounded-borders">
+      <div class="q-px-lg q-py-lg rounded-borders">
         <div class="row justify-center">
-          <div class="q-pa-sm bg-white qrcode-wrapper">
-            <qrcode :value="url" :size="180" />
-          </div>
+          <qrcode :value="url" :size="180" :margin="4" level="L" />
         </div>
         <TextSeparator class="q-py-md">OR</TextSeparator>
         <TextCopy :text="url" />
@@ -35,13 +33,6 @@
     </q-card>
   </q-dialog>
 </template>
-
-<style scoped>
-.qrcode-wrapper {
-  height: 180px;
-  box-sizing: content-box;
-}
-</style>
 
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
