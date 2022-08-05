@@ -28,7 +28,7 @@
     </template>
     <template #body-cell-link="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="primary" icon="link" flat round @click="copyLink(props.row.code)"></q-btn>
+        <q-btn color="primary" icon="link" flat round @click="openLinkDialog(props.row)"></q-btn>
       </q-td>
     </template>
     <template #body-cell-delete="props">
@@ -43,28 +43,14 @@
 import { useQuasar } from 'quasar';
 import { call } from 'src/ts/api';
 import { defineComponent, ref, onMounted } from 'vue';
-import copy from 'copy-to-clipboard';
 import { Client } from '../../../models/clients';
-
-interface InvitationCode {
-  id: string;
-  code: string;
-}
+import { InvitationCode } from '../../../models/invitationCodes';
+import InvitationCodeLink from '../../../components/dialogs/InvitationCodeLink.vue';
 
 export default defineComponent({
   setup() {
     const $q = useQuasar();
     const isLoading = ref(false);
-
-    const copyLink = (code: string) => {
-      const url = `${window.location.origin}/register?code=${code}`;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      copy(url);
-      $q.notify({
-        message: 'Link copied to clipboard',
-        color: 'positive',
-      });
-    };
 
     const createCode = async () => {
       isLoading.value = true;
@@ -134,6 +120,13 @@ export default defineComponent({
       });
     };
 
+    const openLinkDialog = (invitationCode: InvitationCode) => {
+      $q.dialog({
+        component: InvitationCodeLink,
+        componentProps: { invitationCode, clients: allClients.value },
+      });
+    };
+
     const updateInvitCode = async (id: string, clients: string[]) => {
       await call<InvitationCode>(`/api/admin/invitation-codes/${id}/clients`, {
         method: 'PUT',
@@ -149,7 +142,7 @@ export default defineComponent({
       deleteCode,
       createCode,
       isLoading,
-      copyLink,
+      openLinkDialog,
       filteredClients,
       filterClients,
       updateInvitCode,

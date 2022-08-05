@@ -13,6 +13,9 @@
 .secret-section {
   border: 1px dashed $blue-9;
   background-color: $blue-2;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
 
