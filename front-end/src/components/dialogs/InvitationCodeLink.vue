@@ -42,6 +42,7 @@ import Qrcode from 'qrcode.vue';
 import { useI18n } from 'vue-i18n';
 import TextSeparator from './partials/TextSeparator.vue';
 import TextCopy from './partials/TextCopy.vue';
+import { Client } from '../../models/clients';
 
 export default defineComponent({
   components: { Qrcode, TextSeparator, TextCopy },
@@ -55,6 +56,10 @@ export default defineComponent({
       type: Object as PropType<InvitationCode>,
       required: true,
     },
+    clients: {
+      type: Object as PropType<Client[]>,
+      required: true,
+    },
   },
   setup(props) {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
@@ -64,7 +69,10 @@ export default defineComponent({
     const url = computed(() => {
       let url = `${window.location.origin}/register?code=${props.invitationCode.code}`;
       if (redirectAfterRegister.value) {
-        url = `${url}&app=${props.invitationCode.clients[0]}`;
+        const clientUrl = props.clients.find((c) => c.id === props.invitationCode.clients[0])?.url;
+        if (clientUrl) {
+          url = `${url}&redirect=${btoa(clientUrl)}`;
+        }
       }
       return url;
     });

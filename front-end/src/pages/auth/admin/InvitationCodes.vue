@@ -28,7 +28,7 @@
     </template>
     <template #body-cell-link="props">
       <q-td :props="props" class="text-center">
-        <q-btn color="primary" icon="link" flat round @click="copyLink(props.row)"></q-btn>
+        <q-btn color="primary" icon="link" flat round @click="openLinkDialog(props.row)"></q-btn>
       </q-td>
     </template>
     <template #body-cell-delete="props">
@@ -51,15 +51,6 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const isLoading = ref(false);
-
-    const copyLink = (invitationCode: InvitationCode) => {
-      $q.dialog({
-        component: InvitationCodeLink,
-        componentProps: { invitationCode },
-      }).onOk(() => {
-        console.log('onOK');
-      });
-    };
 
     const createCode = async () => {
       isLoading.value = true;
@@ -129,6 +120,13 @@ export default defineComponent({
       });
     };
 
+    const openLinkDialog = (invitationCode: InvitationCode) => {
+      $q.dialog({
+        component: InvitationCodeLink,
+        componentProps: { invitationCode, clients: allClients.value },
+      });
+    };
+
     const updateInvitCode = async (id: string, clients: string[]) => {
       await call<InvitationCode>(`/api/admin/invitation-codes/${id}/clients`, {
         method: 'PUT',
@@ -144,7 +142,7 @@ export default defineComponent({
       deleteCode,
       createCode,
       isLoading,
-      copyLink,
+      openLinkDialog,
       filteredClients,
       filterClients,
       updateInvitCode,

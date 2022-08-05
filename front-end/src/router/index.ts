@@ -80,7 +80,13 @@ export default route(function (/* { store, ssrContext } */) {
           void Router.push('/auth/profile');
           return;
         }
-        void Router.push(atob(redirectBase64QueryParam));
+
+        const decodedUrl = atob(redirectBase64QueryParam);
+        if (/^https?:\/\//.exec(decodedUrl)) {
+          window.location.assign(decodedUrl);
+        } else {
+          void Router.push(decodedUrl);
+        }
       }
     } else {
       void Router.push('/login');
